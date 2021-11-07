@@ -61,9 +61,13 @@ func (c *Config) ConnectionString() string {
 		return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 			c.host, c.port, c.user, c.password, c.database, sslMode)
 	case MongoDB:
-		return fmt.Sprintf("mongodb://%s:%s@%s:%d/%s",
-			c.user, c.password, c.host, c.port, c.database)
+		return fmt.Sprintf("mongodb://%s:%s@%s:%d",
+			c.user, c.password, c.host, c.port)
 	}
 
 	return ""
+}
+
+func (c *Config) DatabaseName() string {
+	return c.database
 }

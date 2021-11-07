@@ -1,4 +1,4 @@
-module github.com/MrWormHole/medusaCMS
+module github.com/MrWormHole/perseusCMS
 
 go 1.16
 

@@ -34,7 +34,26 @@ CREATE TABLE groups(
    updated_at TIMESTAMPTZ
 );
 
--- appointments domain TBC
+-- blog domain
+
+CREATE TABLE authors(
+  id BIGSERIAL PRIMARY KEY,
+  full_name TEXT NOT NULL,
+  created_at TIMESTAMPTZ,
+  updated_at TIMESTAMPTZ
+);
+
+CREATE TABLE posts(
+  id BIGSERIAL PRIMARY KEY,
+  header TEXT NOT NULL,
+  body TEXT NOT NULL,
+  image_url TEXT DEFAULT NULL,
+  author_id BIGINT REFERENCES authors(id) NOT NULL,
+  created_at TIMESTAMPTZ,
+  updated_at TIMESTAMPTZ
+);
+
+-- appointments domain
 
 -- ecommerce domain
 

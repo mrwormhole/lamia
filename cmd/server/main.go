@@ -10,6 +10,7 @@ import (
 func main() {
 	t := template.Must(template.ParseGlob("./web/templates/*.go.tmpl"))
 	t = template.Must(t.ParseGlob("./web/templates/components/*.go.tmpl"))
+	t = template.Must(t.ParseGlob("./web/templates/pages/*.go.tmpl"))
 
 	log.Fatal(http.ListenAndServe(":8080", rest.Handler(t)))
 }

@@ -1,16 +1,15 @@
 package main
 
 import (
+	"github.com/MrWormHole/perseusCMS/http/rest"
 	"html/template"
 	"log"
 	"net/http"
-
-	"github.com/MrWormHole/perseusCMS/pkg/http/rest"
 )
 
 func main() {
-	t := template.Must(template.ParseGlob("./templates/*.go.tmpl"))
-	t = template.Must(t.ParseGlob("./templates/components/*.go.tmpl"))
+	t := template.Must(template.ParseGlob("./web/templates/*.go.tmpl"))
+	t = template.Must(t.ParseGlob("./web/templates/components/*.go.tmpl"))
 
 	log.Fatal(http.ListenAndServe(":8080", rest.Handler(t)))
 }

@@ -7,6 +7,26 @@ import (
 	"fmt"
 )
 
+type OrderStatus string
+
+const (
+	OrderStatusPAID       OrderStatus = "PAID"
+	OrderStatusPROCESSING OrderStatus = "PROCESSING"
+	OrderStatusCOMPLETED  OrderStatus = "COMPLETED"
+)
+
+func (e *OrderStatus) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = OrderStatus(s)
+	case string:
+		*e = OrderStatus(s)
+	default:
+		return fmt.Errorf("unsupported scan type for OrderStatus: %T", src)
+	}
+	return nil
+}
+
 type PermissionRole string
 
 const (
@@ -27,11 +47,28 @@ func (e *PermissionRole) Scan(src interface{}) error {
 	return nil
 }
 
+type Customer struct {
+	ID        int64
+	FirstName string
+	LastName  string
+	Email     string
+	UserID    sql.NullInt64
+}
+
 type Group struct {
 	ID        int64
 	Name      string
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
+}
+
+type Order struct {
+	ID            int64
+	TransactionID string
+	Status        OrderStatus
+	CreatedAt     sql.NullTime
+	UpdatedAt     sql.NullTime
+	CustomerID    int64
 }
 
 type Permission struct {
@@ -41,6 +78,17 @@ type Permission struct {
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
 	GroupID   sql.NullInt64
+}
+
+type ShippingAddress struct {
+	ID         int64
+	Address    string
+	City       string
+	Country    string
+	Zipcode    string
+	CreatedAt  sql.NullTime
+	UpdatedAt  sql.NullTime
+	CustomerID int64
 }
 
 type User struct {

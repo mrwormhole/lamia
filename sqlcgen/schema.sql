@@ -1,3 +1,5 @@
+-- accounts domain
+
 CREATE TABLE users(
   id BIGSERIAL PRIMARY KEY,
   first_name TEXT NOT NULL,
@@ -30,4 +32,38 @@ CREATE TABLE groups(
    name TEXT NOT NULL,
    created_at TIMESTAMPTZ,
    updated_at TIMESTAMPTZ
+);
+
+-- appointments domain TBC
+
+-- ecommerce domain
+
+CREATE TABLE customers(
+    id BIGSERIAL PRIMARY KEY,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    user_id BIGINT REFERENCES users(id) DEFAULT NULL
+);
+
+CREATE TABLE shipping_addresses(
+    id BIGSERIAL PRIMARY KEY,
+    address TEXT NOT NULL,
+    city TEXT NOT NULL,
+    country TEXT NOT NULL,
+    zipcode TEXT NOT NULL,
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ,
+    customer_id BIGINT REFERENCES customers(id) NOT NULL
+);
+
+CREATE TYPE order_status AS ENUM ('PAID', 'PROCESSING', 'COMPLETED');
+
+CREATE TABLE orders(
+    id BIGSERIAL PRIMARY KEY,
+    transaction_id TEXT NOT NULL,
+    status order_status NOT NULL,
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ,
+    customer_id BIGINT REFERENCES customers(id) NOT NULL
 );

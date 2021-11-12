@@ -3,10 +3,9 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+	"github.com/MrWormHole/perseusCMS/storage"
+	"github.com/MrWormHole/perseusCMS/storage/postgres/sqlc"
 
-	"github.com/MrWormHole/perseusCMS/pkg/storage/postgres/sqlc"
-
-	"github.com/MrWormHole/perseusCMS/pkg/storage"
 	_ "github.com/lib/pq"
 )
 

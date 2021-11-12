@@ -16,6 +16,6 @@ func Handler(t *template.Template) http.Handler {
 			panic(err)
 		}
 	})
-	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./web/static/"))))
 	return r
 }

@@ -3,9 +3,9 @@ package mongo
 import (
 	"context"
 	"fmt"
+	"github.com/MrWormHole/perseusCMS/storage"
 	"time"
 
-	"github.com/MrWormHole/perseusCMS/pkg/storage"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )

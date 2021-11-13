@@ -4,11 +4,11 @@
     <html>
 
     <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {{block "meta" .}}
+        {{end}}
+
         <title>{{block "title" .}} Hello page {{end}}</title>
-        <!-- -->
+
         {{block "css" .}}
         {{end}}
 
@@ -22,7 +22,7 @@
     <nav class="navbar is-white">
         <div class="container">
             <div class="navbar-brand">
-                <a class="navbar-item brand-text" href="../index.html"> Bulma Admin Dashboardqwe </a>
+                <a class="navbar-item brand-text" href="../index.html"> Bulma Admin Dashboard </a>
                 <div class="navbar-burger burger" data-target="navMenu">
                     <span></span>
                     <span></span>

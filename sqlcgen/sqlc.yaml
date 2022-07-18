@@ -1,9 +1,0 @@
-version: 1
-packages:
-  - path: "../storage/postgres/sqlc"
-    name: "sqlc"
-    engine: "postgresql"
-    schema: "schema.sql"
-    queries: "queries.sql"
-    emit_result_struct_pointers: true
-    emit_params_struct_pointers: true

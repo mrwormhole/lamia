@@ -1,24 +1,9 @@
-# README
+# Lamia
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Lamia is SaaS software for simple invoicing. The target audience is small business owners and freelancers.
 
-Things you may want to cover:
+Ruby version:\
+truffleruby 22.3.0-dev-3dfcaa03, like ruby 3.0.3, GraalVM CE Native [x86_64-linux]
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Rails version:\
+Rails 7.0.3.1

@@ -9,8 +9,8 @@ set :deploy_to, "/home/deploy/#{fetch :application}"
 
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'public/system', 'public/uploads'
 
-# Only keep the last 5 releases to save disk space
-set :keep_releases, 5
+# Only keep the last 3 releases to save disk space
+set :keep_releases, 3
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp

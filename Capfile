@@ -32,7 +32,7 @@ require 'capistrano/passenger'
 require 'capistrano/rbenv'
 
 set :rbenv_type, :user
-set :rbenv_ruby, 'truffleruby+graalvm-dev'
+set :rbenv_ruby, '3.1.2'
 
 
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined

@@ -255,7 +255,7 @@ DEPENDENCIES
   webdrivers
 
 RUBY VERSION
-   ruby 3.0.3p0 (truffleruby 22.3.0-dev-3dfcaa03)
+   ruby 3.1.2p20
 
 BUNDLED WITH
    2.3.19

@@ -1,0 +1,25 @@
+version: '3'
+
+tasks:
+  vendor-funcs:
+    cmds:
+      - |
+        for folder in $(pwd)/functions/*; do
+          if [ -d "$folder" ] && [[ "$folder" != *"build"* ]] && [[ "$folder" != *"template"* ]]; then
+            cd "$folder"
+            go mod vendor
+          fi
+        done
+    silent: true
+
+  devendor-funcs:
+    cmds:
+      - |
+        for folder in $(pwd)/functions/*; do
+          if [ -d "$folder" ] && [[ "$folder" != *"build"* ]] && [[ "$folder" != *"template"* ]]; then
+            cd "$folder"
+            rm -rf ./vendor
+          fi
+        done
+        echo
+    silent: true

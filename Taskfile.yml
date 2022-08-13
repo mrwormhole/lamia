@@ -1,7 +1,12 @@
 version: '3'
 
+silent: true
+dotenv:
+  - ".env"
+
 tasks:
   vendor-funcs:
+    desc: vendors all the serverless functions
     cmds:
       - |
         for folder in $(pwd)/functions/*; do
@@ -14,6 +19,7 @@ tasks:
     silent: true
 
   devendor-funcs:
+    desc: devendors all the serverless functions
     cmds:
       - |
         for folder in $(pwd)/functions/*; do
@@ -24,3 +30,30 @@ tasks:
         done
         echo "successfully devendored all the functions"
     silent: true
+
+  registry:login:
+    env:
+      GHCR_USERNAME: mrwormhole
+    desc: logins to our container registry
+    cmds:
+      - echo $GHCR_PAT | docker login ghcr.io --username $GHCR_USERNAME --password-stdin
+
+  faas:login:
+    desc: logins to our cloud instance
+    cmds:
+      - echo $OPENFAAS_PASSWORD | faas-cli login -g $OPENFAAS_URL -u $OPENFAAS_USERNAME --password-stdin
+
+  faas:list:
+    desc: lists our deployed functions
+    cmds:
+      - cd $(pwd)/functions && faas-cli list -v
+
+  faas:publish:
+    desc: builds our functions as images and pushes to the registry
+    cmds:
+      - cd $(pwd)/functions && faas-cli publish
+
+  faas:deploy:
+    desc: deploys our built and pushed images to our cloud instance
+    cmds:
+      - cd $(pwd)/functions && faas-cli deploy

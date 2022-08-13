@@ -1,11 +1,11 @@
 version: 1.0
 provider:
   name: openfaas
-  gateway: http://127.0.0.1:8080
+  gateway: http://192.168.1.8:8080
 functions:
   get-invoice:
     lang: golang-middleware
     handler: ./get_invoice
-    image: get_invoice:latest
+    image: ghcr.io/mrwormhole/get_invoice:latest
     build_args:
       GO111MODULE: off

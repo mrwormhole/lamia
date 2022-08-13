@@ -1,5 +1,6 @@
 .idea/
 .vscode/
+.env
 
 functions/template/
 functions/build/

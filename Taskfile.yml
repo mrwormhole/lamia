@@ -1,8 +1,7 @@
 version: '3'
 
 silent: true
-dotenv:
-  - ".env"
+dotenv: [".env"]
 
 tasks:
   vendor-funcs:
@@ -16,7 +15,6 @@ tasks:
           fi
         done
         echo "successfully vendored all the functions"
-    silent: true
 
   devendor-funcs:
     desc: devendors all the serverless functions
@@ -29,7 +27,6 @@ tasks:
           fi
         done
         echo "successfully devendored all the functions"
-    silent: true
 
   registry:login:
     env:

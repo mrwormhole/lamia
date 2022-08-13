@@ -51,7 +51,7 @@ tasks:
   faas:publish:
     desc: builds our functions as images and pushes to the registry
     cmds:
-      - cd $(pwd)/functions && faas-cli publish
+      - cd $(pwd)/functions && faas-cli publish --platforms arm64
 
   faas:deploy:
     desc: deploys our built and pushed images to our cloud instance

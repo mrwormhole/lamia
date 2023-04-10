@@ -1,6 +1,4 @@
 <script lang="ts">
-    import CalendarDate from "$lib/CalendarDate.svelte";
-
     const currencies = ["GBP (£)", "USD ($)", "EUR (€)"];
     const symbols = ["£", "$", "€"];
 
@@ -74,14 +72,6 @@
         return (Math.floor(n * 100) / 100).toFixed(2).toString();
     }
 
-    function setDueDate(event: CustomEvent<{ date: string }>) {
-        dueDate = event.detail.date;
-    }
-
-    function setIssueDate(event: CustomEvent<{ date: string }>) {
-        issueDate = event.detail.date;
-    }
-
     function addRow() {
         rows = [
             ...rows,
@@ -111,7 +101,8 @@
     }
 
     function submit() {
-        console.log("submitted");
+        console.log("submitted: ", issueDate);
+        console.log("submitted: ", dueDate);
     }
 </script>
 
@@ -144,10 +135,12 @@
                 </div>
             </div>
             <div class="column">
-                <CalendarDate id="issue-date" on:message={setIssueDate} />
+                <p class="date-title"><b>Issue Date</b></p>
+                <input class="input" type="date" bind:value={issueDate} required />
             </div>
             <div class="column">
-                <CalendarDate id="due-date" on:message={setDueDate} />
+                <p class="date-title"><b>Due Date</b></p>
+                <input class="input" type="date" bind:value={dueDate} required />
             </div>
         </div>
 
@@ -306,6 +299,11 @@ willy@wonka.com"
     }
 
     .logo-title {
+        font-size: 1rem;
+        padding: 1rem 0rem;
+    }
+
+    .date-title {
         font-size: 1rem;
         padding: 1rem 0rem;
     }

@@ -2,5 +2,6 @@
 .vscode/
 .env
 
-functions/template/
-functions/build/
+.svelte-kit/
+node_modules/
+

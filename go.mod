@@ -1,3 +1,3 @@
-module github.com/MrWormHole/lamia
+module github.com/mrwormhole/lamia
 
-go 1.19
+go 1.20

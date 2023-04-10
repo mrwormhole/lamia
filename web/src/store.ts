@@ -41,8 +41,8 @@ function fromLocalStorage(key: string = "lamia-invoice-data"): InvoiceData {
             {
                 description: "",
                 symbol: "£",
-                rate: 0,
-                quantity: 0,
+                rate: undefined,
+                quantity: undefined,
                 amount: "",
             },
         ],

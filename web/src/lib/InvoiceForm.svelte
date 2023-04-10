@@ -1,6 +1,15 @@
 <script lang="ts">
     const currencies = ["GBP (£)", "USD ($)", "EUR (€)"];
     const symbols = ["£", "$", "€"];
+    const fromPlaceholder = `From Goldenhand Software
+1 Electric Wharf, Generator Hall
+Coventry, England, CV1 4JL
+info@goldenhandosoftware.co.uk`
+    const toPlaceholder = `To Willy Wonka
+Candy Factory, 1445 Norwood Ave
+Itasca, IL 60143
+willy@wonka.com
+`
 
     let currency: string = currencies[0];
     let symbol: string = symbols[0];
@@ -30,6 +39,7 @@
         },
     ];
 
+    // total amount calculator
     $: {
         totalAmount = 0;
         for (const row of rows) {
@@ -44,9 +54,8 @@
         }
     }
 
-    function setCurrency(event: Event) {
-        const target = event.target as HTMLSelectElement;
-        currency = target.value;
+    // currency adjuster
+    $: {
         symbol = CurrencySymbol(currency);
         for (const row of rows) {
             row.symbol = CurrencySymbol(currency);
@@ -136,11 +145,21 @@
             </div>
             <div class="column">
                 <p class="date-title"><b>Issue Date</b></p>
-                <input class="input" type="date" bind:value={issueDate} required />
+                <input
+                    class="input"
+                    type="date"
+                    bind:value={issueDate}
+                    required
+                />
             </div>
             <div class="column">
                 <p class="date-title"><b>Due Date</b></p>
-                <input class="input" type="date" bind:value={dueDate} required />
+                <input
+                    class="input"
+                    type="date"
+                    bind:value={dueDate}
+                    required
+                />
             </div>
         </div>
 
@@ -149,20 +168,14 @@
                 <div class="tile is-child">
                     <textarea
                         class="textarea"
-                        placeholder="From Goldenhand Software
-1 Electric Wharf, Generator Hall
-Coventry, England, CV1 4JL
-info@goldenhandosoftware.co.uk"
+                        placeholder={fromPlaceholder}
                         bind:value={from}
                     />
                 </div>
                 <div class="tile is-child">
                     <textarea
                         class="textarea"
-                        placeholder="To Willy Wonka
-Candy Factory, 1445 Norwood Ave
-Itasca, IL 60143
-willy@wonka.com"
+                        placeholder={toPlaceholder}
                         bind:value={to}
                     />
                 </div>
@@ -188,6 +201,7 @@ willy@wonka.com"
                                     class="input is-borderless"
                                     type="text"
                                     placeholder="Extreme Milky Chocolate High Quality 20% Cocoa"
+                                    bind:value={row.description}
                                 />
                             </td>
                             <td class="p-0">
@@ -237,14 +251,14 @@ willy@wonka.com"
 
         <textarea
             class="textarea mt-5"
-            placeholder="Notes..."
+            placeholder="Optional Notes..."
             rows="5"
             bind:value={notes}
         />
 
         <div class="box-footer mt-5 has-text-right">
             <div class="select is-dark">
-                <select value={currency} on:change={setCurrency}>
+                <select bind:value={currency}>
                     {#each currencies as currency}
                         <option>{currency}</option>
                     {/each}

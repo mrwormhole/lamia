@@ -20,6 +20,7 @@ willy@wonka.com
     let invoiceNumber: string = "";
     let issueDate: string = "";
     let dueDate: string = "";
+    let filename: string = "";
 
     type InvoiceRow = {
         description: string;
@@ -61,6 +62,13 @@ willy@wonka.com
             row.symbol = CurrencySymbol(currency);
         }
         rows = [...rows];
+    }
+
+    function setFilename(event: Event) {
+        const target = event.target as HTMLInputElement;
+        if (target.files != undefined && target.files.length > 0) {
+            filename = target.files[0].name;
+        }
     }
 
     function CurrencySymbol(currency: string): string {
@@ -110,8 +118,9 @@ willy@wonka.com
     }
 
     function submit() {
-        console.log("submitted: ", issueDate);
-        console.log("submitted: ", dueDate);
+        console.log("submitted filename: ", )
+        console.log("submitted issue date: ", issueDate);
+        console.log("submitted due date: ", dueDate);
     }
 </script>
 
@@ -132,14 +141,14 @@ willy@wonka.com
                 <p class="logo-title"><b>Logo</b></p>
                 <div class="file has-name is-fullwidth is-light">
                     <label class="file-label">
-                        <input class="file-input" type="file" name="logo" />
+                        <input class="file-input" type="file" name="logo" on:change={setFilename} />
                         <span class="file-cta">
                             <span class="file-icon">
                                 <i class="fa fa-upload" />
                             </span>
                             <span class="file-label"> Upload </span>
                         </span>
-                        <span class="file-name"> logo.png </span>
+                        <span class="file-name"> {filename} </span>
                     </label>
                 </div>
             </div>

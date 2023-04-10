@@ -1,4 +1,7 @@
 <script lang="ts">
+    import { browser } from "$app/environment";
+    import { invoice } from "../store";
+
     const currencies = ["GBP (£)", "USD ($)", "EUR (€)"];
     const symbols = ["£", "$", "€"];
     const fromPlaceholder = `From Goldenhand Software
@@ -10,58 +13,30 @@ Candy Factory, 1445 Norwood Ave
 Itasca, IL 60143
 willy@wonka.com
 `
-
-    let currency: string = currencies[0];
-    let symbol: string = symbols[0];
-    let totalAmount: number = 0;
-    let notes: string = "";
-    let from: string = "";
-    let to: string = "";
-    let invoiceNumber: string = "";
-    let issueDate: string = "";
-    let dueDate: string = "";
     let filename: string = "";
 
-    type InvoiceRow = {
-        description: string;
-        symbol: string;
-        rate: number | undefined;
-        quantity: number | undefined;
-        amount: string;
-    };
-
-    let rows: Array<InvoiceRow> = [
-        {
-            description: "",
-            symbol: symbol,
-            rate: undefined,
-            quantity: undefined,
-            amount: "",
-        },
-    ];
-
-    // total amount calculator
-    $: {
-        totalAmount = 0;
-        for (const row of rows) {
+    // total amount tracker
+    $: if (browser) {
+        $invoice.totalAmount = 0;
+        for (const row of $invoice.rows) {
             if (row.rate == undefined || row.quantity == undefined) {
                 row.amount = "";
             } else {
                 row.rate = Math.floor(row.rate * 100) / 100;
                 row.quantity = Math.floor(row.quantity * 100) / 100;
                 row.amount = DecimalFixed(row.rate * row.quantity);
-                totalAmount += parseFloat(row.amount);
+                $invoice.totalAmount += parseFloat(row.amount);
             }
         }
     }
 
-    // currency adjuster
-    $: {
-        symbol = CurrencySymbol(currency);
-        for (const row of rows) {
-            row.symbol = CurrencySymbol(currency);
+    // currency tracker
+    $: if (browser) {
+        $invoice.symbol = CurrencySymbol($invoice.currency);
+        for (const row of $invoice.rows) {
+            row.symbol = CurrencySymbol($invoice.currency);
         }
-        rows = [...rows];
+        $invoice.rows = [...$invoice.rows];
     }
 
     function setFilename(event: Event) {
@@ -90,11 +65,11 @@ willy@wonka.com
     }
 
     function addRow() {
-        rows = [
-            ...rows,
+        $invoice.rows = [
+            ...$invoice.rows,
             {
                 description: "",
-                symbol: symbol,
+                symbol: $invoice.symbol,
                 rate: undefined,
                 quantity: undefined,
                 amount: "",
@@ -103,24 +78,30 @@ willy@wonka.com
     }
 
     function clear() {
-        rows = [
+        $invoice.rows = [
             {
                 description: "",
-                symbol: symbol,
+                symbol: symbols[0],
                 rate: undefined,
                 quantity: undefined,
                 amount: "",
             },
         ];
-        currency = currencies[0];
-        symbol = symbols[0];
-        totalAmount = 0;
+        $invoice.currency = currencies[0];
+        $invoice.symbol = symbols[0];
+        $invoice.totalAmount = 0;
+        $invoice.notes = "";
+        $invoice.from = "";
+        $invoice.to = "";
+        $invoice.invoiceNumber = "";
+        $invoice.issueDate = "";
+        $invoice.dueDate = "";
     }
 
     function submit() {
         console.log("submitted filename: ", )
-        console.log("submitted issue date: ", issueDate);
-        console.log("submitted due date: ", dueDate);
+        console.log("submitted issue date: ", $invoice.issueDate);
+        console.log("submitted due date: ", $invoice.dueDate);
     }
 </script>
 
@@ -133,7 +114,7 @@ willy@wonka.com
                     class="input"
                     type="text"
                     placeholder="Invoice 30"
-                    bind:value={invoiceNumber}
+                    bind:value={$invoice.invoiceNumber}
                     required
                 />
             </div>
@@ -157,7 +138,7 @@ willy@wonka.com
                 <input
                     class="input"
                     type="date"
-                    bind:value={issueDate}
+                    bind:value={$invoice.issueDate}
                     required
                 />
             </div>
@@ -166,7 +147,7 @@ willy@wonka.com
                 <input
                     class="input"
                     type="date"
-                    bind:value={dueDate}
+                    bind:value={$invoice.dueDate}
                     required
                 />
             </div>
@@ -178,14 +159,14 @@ willy@wonka.com
                     <textarea
                         class="textarea"
                         placeholder={fromPlaceholder}
-                        bind:value={from}
+                        bind:value={$invoice.from}
                     />
                 </div>
                 <div class="tile is-child">
                     <textarea
                         class="textarea"
                         placeholder={toPlaceholder}
-                        bind:value={to}
+                        bind:value={$invoice.to}
                     />
                 </div>
             </div>
@@ -202,7 +183,7 @@ willy@wonka.com
                     </tr>
                 </thead>
                 <tbody>
-                    {#each rows as row}
+                    {#each $invoice.rows as row}
                         <tr>
                             <td class="p-0">
                                 <input
@@ -251,7 +232,7 @@ willy@wonka.com
                 <ul class="list-group list-group-unbordered">
                     <li class="list-group-item">
                         <p class="subtitle has-text-weight-bold">
-                            Total: {symbol}{DecimalFixed(totalAmount)}
+                            Total: {$invoice.symbol}{DecimalFixed($invoice.totalAmount)}
                         </p>
                     </li>
                 </ul>
@@ -262,12 +243,12 @@ willy@wonka.com
             class="textarea mt-5"
             placeholder="Optional Notes..."
             rows="5"
-            bind:value={notes}
+            bind:value={$invoice.notes}
         />
 
         <div class="box-footer mt-5 has-text-right">
             <div class="select is-dark">
-                <select bind:value={currency}>
+                <select bind:value={$invoice.currency}>
                     {#each currencies as currency}
                         <option>{currency}</option>
                     {/each}
@@ -292,18 +273,6 @@ willy@wonka.com
                     <i class="fa fa-refresh" aria-hidden="true" />
                 </span>
                 <span>Clear</span>
-            </button>
-            <!--<button class="button is-light" on:click|preventDefault={clear}>
-                <span class="icon">
-                    <i class="fa fa-floppy-o" aria-hidden="true" />
-                </span>
-                <span>Save</span>
-            </button>-->
-            <button class="button is-light">
-                <span class="icon">
-                    <i class="fa fa-eye" aria-hidden="true" />
-                </span>
-                <span>Preview</span>
             </button>
             <button class="button is-dark" type="submit">
                 <span class="icon">

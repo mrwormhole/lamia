@@ -96,19 +96,20 @@ willy@wonka.com
         $invoice.invoiceNumber = "";
         $invoice.issueDate = "";
         $invoice.dueDate = "";
+        
+        let el = document.querySelector(".file-input") as HTMLInputElement;
+        el.value = "";
+        filename = "";
     }
 
     async function submit(event: Event) {
         const target = event.target as HTMLFormElement;
         const formData = new FormData(target);
 
-        // // deal with rows here
         formData.append("symbol", $invoice.symbol);
         formData.append("totalAmount", DecimalFixed($invoice.totalAmount));
 
         try {
-            //const formData = new FormData(form);
-            console.log("formData", formData);
             const response = await fetch("http://localhost:5555/generate/invoice", {
                 method: "POST",
                 body: formData,
@@ -148,7 +149,6 @@ willy@wonka.com
                             class="file-input"
                             type="file"
                             name="logo"
-                            
                             on:change={setFilename}
                         />
                         <span class="file-cta">
@@ -215,13 +215,14 @@ willy@wonka.com
                     </tr>
                 </thead>
                 <tbody>
-                    {#each $invoice.rows as row}
+                    {#each $invoice.rows as row, i}
                         <tr>
                             <td class="p-0">
                                 <input
                                     id="description"
                                     class="input is-borderless"
                                     type="text"
+                                    name={`description-${i}`}
                                     placeholder="Extreme Milky Chocolate High Quality 20% Cocoa"
                                     bind:value={row.description}
                                 />
@@ -231,6 +232,7 @@ willy@wonka.com
                                     id="rate"
                                     class="input is-borderless"
                                     type="number"
+                                    name={`rate-${i}`}
                                     on:change|preventDefault={setDecimal}
                                     min="0"
                                     step="1"
@@ -243,6 +245,7 @@ willy@wonka.com
                                     id="quantity"
                                     class="input is-borderless"
                                     type="number"
+                                    name={`quantity-${i}`}
                                     on:change|preventDefault={setDecimal}
                                     min="0"
                                     step="1"

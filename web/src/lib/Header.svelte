@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let name: String;
+    export let name: string;
 </script>
 
 <header class="hero is-info">

@@ -1,6 +1,6 @@
 version: 1
 packages:
-  - path: "../storage/postgres/sqlc"
+  - path: "../pkg/sqlc"
     name: "sqlc"
     engine: "postgresql"
     schema: "schema.sql"

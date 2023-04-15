@@ -2,8 +2,28 @@ version: '3'
 silent: true
 
 tasks:
-  hello:
-    desc: says hello there
+  server:
+    desc: runs backend server
     cmds:
       - |
-        echo "hello there"
+        PORT=5555 go run ./cmd/lamia/main.go
+
+  server:build:
+    desc: build backend server
+    cmds:
+      - |
+        go build -o lamia ./cmd/lamia/main.go
+
+  frontend:
+    desc: runs frontend client
+    cmds:
+      - |
+        cd ./web/
+        pnpm dev
+
+  frontend:build:
+    desc: builds frontend client
+    cmds:
+      - |
+        cd ./web/
+        pnpm build

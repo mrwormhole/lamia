@@ -7,12 +7,12 @@
     const fromPlaceholder = `From Goldenhand Software
 1 Electric Wharf, Generator Hall
 Coventry, England, CV1 4JL
-info@goldenhandosoftware.co.uk`
+info@goldenhandosoftware.co.uk`;
     const toPlaceholder = `To Willy Wonka
 Candy Factory, 1445 Norwood Ave
 Itasca, IL 60143
 willy@wonka.com
-`
+`;
     let filename: string = "";
 
     // total amount tracker
@@ -98,14 +98,35 @@ willy@wonka.com
         $invoice.dueDate = "";
     }
 
-    function submit() {
-        console.log("submitted filename: ", )
-        console.log("submitted issue date: ", $invoice.issueDate);
-        console.log("submitted due date: ", $invoice.dueDate);
+    async function submit(event: Event) {
+        const target = event.target as HTMLFormElement;
+        const formData = new FormData(target);
+
+        // // deal with rows here
+        formData.append("symbol", $invoice.symbol);
+        formData.append("totalAmount", DecimalFixed($invoice.totalAmount));
+
+        try {
+            //const formData = new FormData(form);
+            console.log("formData", formData);
+            const response = await fetch("http://localhost:5555/generate/invoice", {
+                method: "POST",
+                body: formData,
+            });
+
+            console.log(response);
+        } catch (error) {
+            console.error(error);
+        }
     }
 </script>
 
-<form class="container" on:submit|preventDefault={submit}>
+<form
+    class="container"
+    on:submit|preventDefault={submit}
+    method="POST"
+    enctype="multipart/form-data">
+
     <div class="box box-good">
         <div class="columns">
             <div class="column">
@@ -113,6 +134,7 @@ willy@wonka.com
                 <input
                     class="input"
                     type="text"
+                    name="invoiceNumber"
                     placeholder="Invoice 30"
                     bind:value={$invoice.invoiceNumber}
                     required
@@ -122,7 +144,13 @@ willy@wonka.com
                 <p class="logo-title"><b>Logo</b></p>
                 <div class="file has-name is-fullwidth is-light">
                     <label class="file-label">
-                        <input class="file-input" type="file" name="logo" on:change={setFilename} />
+                        <input
+                            class="file-input"
+                            type="file"
+                            name="logo"
+                            
+                            on:change={setFilename}
+                        />
                         <span class="file-cta">
                             <span class="file-icon">
                                 <i class="fa fa-upload" />
@@ -138,6 +166,7 @@ willy@wonka.com
                 <input
                     class="input"
                     type="date"
+                    name="issueDate"
                     bind:value={$invoice.issueDate}
                     required
                 />
@@ -147,6 +176,7 @@ willy@wonka.com
                 <input
                     class="input"
                     type="date"
+                    name="dueDate"
                     bind:value={$invoice.dueDate}
                     required
                 />
@@ -159,6 +189,7 @@ willy@wonka.com
                     <textarea
                         class="textarea"
                         placeholder={fromPlaceholder}
+                        name="from"
                         bind:value={$invoice.from}
                     />
                 </div>
@@ -166,6 +197,7 @@ willy@wonka.com
                     <textarea
                         class="textarea"
                         placeholder={toPlaceholder}
+                        name="to"
                         bind:value={$invoice.to}
                     />
                 </div>
@@ -232,7 +264,9 @@ willy@wonka.com
                 <ul class="list-group list-group-unbordered">
                     <li class="list-group-item">
                         <p class="subtitle has-text-weight-bold">
-                            Total: {$invoice.symbol}{DecimalFixed($invoice.totalAmount)}
+                            Total: {$invoice.symbol}{DecimalFixed(
+                                $invoice.totalAmount
+                            )}
                         </p>
                     </li>
                 </ul>
@@ -242,6 +276,7 @@ willy@wonka.com
         <textarea
             class="textarea mt-5"
             placeholder="Optional Notes..."
+            name="notes"
             rows="5"
             bind:value={$invoice.notes}
         />

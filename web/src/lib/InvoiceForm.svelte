@@ -124,6 +124,14 @@ willy@wonka.com
                 method: "POST",
                 body: formData,
             });
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            let downloaderElement = document.createElement('a');    
+            downloaderElement.href = url;
+            downloaderElement.download = `invoice-${$invoice.issueDate}.pdf`;
+            document.body.appendChild(downloaderElement);
+            downloaderElement.click();    
+            downloaderElement.remove(); 
             console.log(response);
         } catch (error) {
             console.error(error);

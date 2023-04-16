@@ -22,7 +22,7 @@ func main() {
 	}
 
 	var invoiceSvc invoicing.InvoiceService
-	mux := rest.Handler(invoiceSvc)
+	mux := rest.Handler(&invoiceSvc)
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", port),
 		Handler: mux,

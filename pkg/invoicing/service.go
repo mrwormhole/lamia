@@ -8,7 +8,7 @@ import (
 
 type InvoiceService struct{}
 
-func (s InvoiceService) MakePDF(w io.Writer, invoice Invoice) error {
+func (s *InvoiceService) MakePDF(w io.Writer, invoice *Invoice) error {
 	pdf := gofpdf.New(gofpdf.OrientationPortrait, gofpdf.UnitMillimeter, gofpdf.PageSizeA4, "")
 	pdf.AddPage()
 	pdf.SetFont("Arial", "B", 16)

@@ -13,7 +13,7 @@ import (
 
 const maxFileSize = 8 * 1024 * 1024
 
-func Handler(svc invoicing.InvoiceService) http.Handler {
+func Handler(svc *invoicing.InvoiceService) http.Handler {
 	r := chi.NewRouter()
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
@@ -26,7 +26,7 @@ func Handler(svc invoicing.InvoiceService) http.Handler {
 	return r
 }
 
-func generateInvoice(svc invoicing.InvoiceService) http.HandlerFunc {
+func generateInvoice(svc *invoicing.InvoiceService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseMultipartForm(maxFileSize)
 		if err != nil {
@@ -34,19 +34,19 @@ func generateInvoice(svc invoicing.InvoiceService) http.HandlerFunc {
 			return
 		}
 
-		_, err = invoicing.FormToInvoice(r.MultipartForm)
+		invoice, err := invoicing.FormToInvoice(r.MultipartForm)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		rawReq, err := httputil.DumpRequest(r, true)
-		if err != nil {
-			panic(err)
-		}
+		rawReq, _ := httputil.DumpRequest(r, true)
 		log.Println(string(rawReq))
-		log.Println("------------------------------------------------------------")
 
-		_, _ = w.Write([]byte("invoice generated"))
+		if err := svc.MakePDF(w, invoice); err != nil {
+			log.Printf("[ERROR] %T.MakePDF(): %v \n", svc, err)
+			http.Error(w, "failed to generate pdf", http.StatusInternalServerError)
+		}
+		w.Header().Set("Content-Type", "application/pdf")
 	}
 }

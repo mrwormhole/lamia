@@ -1,5 +1,6 @@
 <script lang="ts">
     import { browser } from "$app/environment";
+    import { append } from "svelte/internal";
     import Page from "../routes/+page.svelte";
     import { invoice } from "../store";
 
@@ -15,6 +16,7 @@ Itasca, IL 60143
 willy@wonka.com
 `;
     let filename: string = "";
+    let notifications: Array<string> = [];
 
     // total amount tracker
     $: if (browser) {
@@ -97,7 +99,7 @@ willy@wonka.com
         $invoice.invoiceNumber = "";
         $invoice.issueDate = "";
         $invoice.dueDate = "";
-        
+
         let el = document.querySelector(".file-input") as HTMLInputElement;
         el.value = "";
         filename = "";
@@ -119,27 +121,41 @@ willy@wonka.com
         });
         formData.append("totalAmount", DecimalFixed($invoice.totalAmount));
         formData.append("symbol", $invoice.symbol);
+        notifications = []
 
         try {
-            const response = await fetch("http://localhost:5555/generate/invoice", {
-                method: "POST",
-                body: formData,
-            });
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            let downloaderElement = document.createElement('a');    
-            downloaderElement.href = url;
-            const parts = response.headers.get("content-disposition")?.split(";")
-            if (parts != undefined && parts.length > 1) {
-                downloaderElement.download = parts[1].split('=')[1];
+            const response = await fetch(
+                "http://localhost:5555/generate/invoice",
+                {
+                    method: "POST",
+                    body: formData,
+                }
+            );
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                let downloaderElement = document.createElement("a");
+                downloaderElement.href = url;
+                const parts = response.headers
+                    .get("content-disposition")
+                    ?.split(";");
+                if (parts != undefined && parts.length > 1) {
+                    downloaderElement.download = parts[1].split("=")[1];
+                } else {
+                    downloaderElement.download = `invoice-${$invoice.issueDate}.pdf`;
+                }
+                document.body.appendChild(downloaderElement);
+                downloaderElement.click();
+                downloaderElement.remove();
             } else {
-                downloaderElement.download = `invoice-${$invoice.issueDate}.pdf`;
+                const text = await response.text();
+                notifications = [...notifications, text]
             }
-            document.body.appendChild(downloaderElement);
-            downloaderElement.click();    
-            downloaderElement.remove(); 
+
             console.log(response);
-            response.headers.forEach(function(val, key) { console.log(key + ' -> ' + val); });
+            response.headers.forEach(function (val, key) {
+                console.log(key + " -> " + val);
+            });
         } catch (error) {
             console.error(error);
         }
@@ -150,8 +166,8 @@ willy@wonka.com
     class="container"
     on:submit|preventDefault={submit}
     method="POST"
-    enctype="multipart/form-data">
-
+    enctype="multipart/form-data"
+>
     <div class="box box-good">
         <div class="columns">
             <div class="column">
@@ -301,12 +317,25 @@ willy@wonka.com
         </div>
 
         <textarea
-            class="textarea mt-5"
+            class="textarea mt-5 mb-5"
             placeholder="Optional Notes..."
             name="notes"
             rows="5"
             bind:value={$invoice.notes}
         />
+
+        {#if notifications.length != 0}
+        <div class="notification is-danger">
+            <button class="delete" on:click|preventDefault={() => notifications = []} />
+            <ul class="">   
+            {#each notifications as notification}
+            <li class="">
+                - Notification: {notification}
+            </li>
+            {/each}
+            </ul>
+        </div>
+        {/if}
 
         <div class="box-footer mt-5 has-text-right">
             <div class="select is-dark">

@@ -164,8 +164,12 @@ func FormToInvoice(form *multipart.Form) (*Invoice, error) {
 	for name, values := range form.File {
 		if name == "logo" && len(values) > 0 {
 			val := values[0]
-			// filename should have an image extension here as validation, png, jpg, etc...
-			// so I don't get a porn or something
+
+			contentType := val.Header.Get("Content-Type")
+			if contentType != "image/png" {
+				return nil, fmt.Errorf("logo has to be in \"image/png format\", %q format is not accepted", contentType)
+			}
+
 			f, err := val.Open()
 			if err != nil {
 				return nil, fmt.Errorf("%T.Open(): %v", val, err)

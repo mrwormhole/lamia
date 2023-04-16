@@ -33,7 +33,7 @@ func generateInvoice(svc *invoicing.InvoiceService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseMultipartForm(maxFileSize)
 		if err != nil {
-			http.Error(w, "attached logo can not be bigger than 8Mb", http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 

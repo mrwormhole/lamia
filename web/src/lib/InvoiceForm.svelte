@@ -1,5 +1,6 @@
 <script lang="ts">
     import { browser } from "$app/environment";
+    import Page from "../routes/+page.svelte";
     import { invoice } from "../store";
 
     const currencies = ["GBP (£)", "USD ($)", "EUR (€)"];
@@ -128,11 +129,17 @@ willy@wonka.com
             const url = window.URL.createObjectURL(blob);
             let downloaderElement = document.createElement('a');    
             downloaderElement.href = url;
-            downloaderElement.download = `invoice-${$invoice.issueDate}.pdf`;
+            const parts = response.headers.get("content-disposition")?.split(";")
+            if (parts != undefined && parts.length > 1) {
+                downloaderElement.download = parts[1].split('=')[1];
+            } else {
+                downloaderElement.download = `invoice-${$invoice.issueDate}.pdf`;
+            }
             document.body.appendChild(downloaderElement);
             downloaderElement.click();    
             downloaderElement.remove(); 
             console.log(response);
+            response.headers.forEach(function(val, key) { console.log(key + ' -> ' + val); });
         } catch (error) {
             console.error(error);
         }

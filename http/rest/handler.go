@@ -7,11 +7,13 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
+
+	"github.com/mrwormhole/lamia/pkg/invoicing"
 )
 
 const maxFileSize = 8 * 1024 * 1024
 
-func Handler() http.Handler {
+func Handler(svc invoicing.InvoiceService) http.Handler {
 	r := chi.NewRouter()
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
@@ -20,31 +22,31 @@ func Handler() http.Handler {
 		MaxAge:         300,
 	}))
 
-	r.Post("/generate/invoice", generateInvoice)
+	r.Post("/generate/invoice", generateInvoice(svc))
 	return r
 }
 
-func generateInvoice(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseMultipartForm(maxFileSize)
-	if err != nil {
-		panic(err)
-	}
-
-	if r.MultipartForm != nil {
-		for k, v := range r.MultipartForm.Value {
-			log.Printf("multipart form values = %v:%v \n", k, v)
+func generateInvoice(svc invoicing.InvoiceService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := r.ParseMultipartForm(maxFileSize)
+		if err != nil {
+			http.Error(w, "attached logo can not be bigger than 8Mb", http.StatusBadRequest)
+			return
 		}
-		for k, v := range r.MultipartForm.File {
-			log.Printf("multipart form files = %v:%v \n", k, v)
+
+		_, err = invoicing.FormToInvoice(r.MultipartForm)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
-	}
 
-	rawReq, err := httputil.DumpRequest(r, true)
-	if err != nil {
-		panic(err)
-	}
-	log.Println(string(rawReq))
-	log.Println("------------------------------------------------------------")
+		rawReq, err := httputil.DumpRequest(r, true)
+		if err != nil {
+			panic(err)
+		}
+		log.Println(string(rawReq))
+		log.Println("------------------------------------------------------------")
 
-	_, _ = w.Write([]byte("invoice generated"))
+		_, _ = w.Write([]byte("invoice generated"))
+	}
 }

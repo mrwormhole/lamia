@@ -106,15 +106,24 @@ willy@wonka.com
         const target = event.target as HTMLFormElement;
         const formData = new FormData(target);
 
-        formData.append("symbol", $invoice.symbol);
+        $invoice.rows.forEach((row, i) => {
+            formData.append(`description-${i}`, row.description);
+            if (row.rate != undefined) {
+                formData.append(`rate-${i}`, DecimalFixed(row.rate));
+            }
+            if (row.quantity != undefined) {
+                formData.append(`quantity-${i}`, DecimalFixed(row.quantity));
+            }
+            formData.append(`amount-${i}`, row.amount);
+        });
         formData.append("totalAmount", DecimalFixed($invoice.totalAmount));
+        formData.append("symbol", $invoice.symbol);
 
         try {
             const response = await fetch("http://localhost:5555/generate/invoice", {
                 method: "POST",
                 body: formData,
             });
-
             console.log(response);
         } catch (error) {
             console.error(error);
@@ -215,16 +224,16 @@ willy@wonka.com
                     </tr>
                 </thead>
                 <tbody>
-                    {#each $invoice.rows as row, i}
+                    {#each $invoice.rows as row}
                         <tr>
                             <td class="p-0">
                                 <input
                                     id="description"
                                     class="input is-borderless"
                                     type="text"
-                                    name={`description-${i}`}
                                     placeholder="Extreme Milky Chocolate High Quality 20% Cocoa"
                                     bind:value={row.description}
+                                    required
                                 />
                             </td>
                             <td class="p-0">
@@ -232,12 +241,12 @@ willy@wonka.com
                                     id="rate"
                                     class="input is-borderless"
                                     type="number"
-                                    name={`rate-${i}`}
                                     on:change|preventDefault={setDecimal}
                                     min="0"
-                                    step="1"
+                                    step="0.01"
                                     placeholder="1.00"
                                     bind:value={row.rate}
+                                    required
                                 />
                             </td>
                             <td class="p-0">
@@ -245,12 +254,12 @@ willy@wonka.com
                                     id="quantity"
                                     class="input is-borderless"
                                     type="number"
-                                    name={`quantity-${i}`}
                                     on:change|preventDefault={setDecimal}
                                     min="0"
-                                    step="1"
+                                    step="0.01"
                                     placeholder="1.00"
                                     bind:value={row.quantity}
+                                    required
                                 />
                             </td>
                             <td>

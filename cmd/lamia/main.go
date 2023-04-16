@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/mrwormhole/lamia/http/rest"
+	"github.com/mrwormhole/lamia/pkg/invoicing"
 )
 
 func main() {
@@ -20,7 +21,8 @@ func main() {
 		log.Fatal("PORT env variable is not specified")
 	}
 
-	mux := rest.Handler()
+	var invoiceSvc invoicing.InvoiceService
+	mux := rest.Handler(invoiceSvc)
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", port),
 		Handler: mux,

@@ -1,5 +1,6 @@
-FROM --platform=${TARGETPLATFORM:-linux/amd64} node:alpine3.17 AS base
+FROM --platform=${BUILDPLATFORM:-linux/amd64} node:alpine3.17 AS build
 
+ARG BUILDPLATFORM
 ARG TARGETPLATFORM
 
 WORKDIR /app
@@ -8,10 +9,10 @@ COPY . .
 RUN npm install -g pnpm
 RUN pnpm install && pnpm build
 
-FROM --platform=${TARGETPLATFORM:-linux/amd64} caddy:latest AS builder
+FROM --platform=${TARGETPLATFORM:-linux/amd64} caddy:latest AS ship
 
 COPY ./Caddyfile /etc/caddy/Caddyfile
-COPY --from=base /app/build /srv
+COPY --from=build /app/build /srv
 
 EXPOSE 8080
 

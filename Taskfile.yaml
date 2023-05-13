@@ -30,5 +30,18 @@ tasks:
         -t lamia:{{.VERSION}} \
         --build-arg BUILD_REF={{.VERSION}} \
         --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
-        --platform="linux/arm64,linux/amd64" \
+        --platform="linux/amd64" \
         --output type=docker
+
+  docker:publish:
+    desc: publishes the docker image to GHCR
+    vars:
+      VERSION: $(git fetch --tags && git describe --tags --abbrev=0) 
+    cmds:
+      - |
+        docker buildx build . \
+        -t ghcr.io/mrwormhole/lamia:{{.VERSION}} \
+        --build-arg BUILD_REF={{.VERSION}} \
+        --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+        --platform="linux/arm64,linux/amd64" \
+        --push

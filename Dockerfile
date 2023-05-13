@@ -1,4 +1,4 @@
-FROM --platform=${TARGETPLATFORM:-linux/amd64} node:18.16.0-alpine3.17 AS base
+FROM --platform=${TARGETPLATFORM:-linux/amd64} node-alpine3.17 AS base
 
 ARG TARGETPLATFORM
 

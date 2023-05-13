@@ -14,9 +14,13 @@ Candy Factory, 1445 Norwood Ave
 Itasca, IL 60143
 willy@wonka.com
 `;
+    const validImageTypes = ["image/jpg", "image/jpeg", "image/png"];
+    const mb = 1 << (10 * 2);
+
     let notifications: Array<string> = [];
 
-    $: if (browser) { // total amount tracker
+    $: if (browser) {
+        // total amount tracker
         $invoice.totalAmount = 0;
         for (const row of $invoice.rows) {
             if (row.rate == undefined || row.quantity == undefined) {
@@ -33,14 +37,38 @@ willy@wonka.com
     function setLogo(event: Event) {
         const target = event.target as HTMLInputElement;
         if (target.files != undefined && target.files.length > 0) {
+            const file = target.files[0];
+
+            if (!validImageTypes.includes(file.type)) {
+                notifications = [
+                    ...notifications,
+                    `Attached logo(${file.type}) must be an image file.`,
+                ];
+                return;
+            }
+
+            if (file.size > 4 * mb) {
+                notifications = [
+                    ...notifications,
+                    `Attached logo size(${file.size} bytes) must be less than 4MB.`,
+                ];
+                return;
+            }
+
             const reader: FileReader = new FileReader();
-            reader.addEventListener("load", () => {
+            reader.onload = function () {
                 if (reader.result != undefined) {
                     $invoice.logoBase64Img = reader.result.toString();
+                    $invoice.logoFilename = file.name;
+
+                    console.log("SIZE", file.size);
                 }
-            });
-            reader.readAsDataURL(target.files[0]);
-            $invoice.logoFilename = target.files[0].name;
+            };
+            reader.onerror = function (error) {
+                notifications = [...notifications, `Error occurred, ${error}.`];
+            };
+
+            reader.readAsDataURL(file);
         }
     }
 
@@ -116,6 +144,7 @@ willy@wonka.com
                             class="file-input"
                             type="file"
                             name="logo"
+                            accept={validImageTypes.join(",")}
                             on:change={setLogo}
                         />
                         <span class="file-cta">
@@ -178,9 +207,9 @@ willy@wonka.com
                 <thead>
                     <tr>
                         <th>Description</th>
-                        <th>Rate</th>
+                        <th>Price</th>
                         <th>Qty</th>
-                        <th>Amount</th>
+                        <th>Total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -251,7 +280,7 @@ willy@wonka.com
             class="textarea mt-5 mb-5"
             placeholder="Optional Notes..."
             name="notes"
-            rows="5"
+            rows="12"
             bind:value={$invoice.notes}
         />
 
@@ -264,7 +293,7 @@ willy@wonka.com
                 <ul class="">
                     {#each notifications as notification}
                         <li class="">
-                            - Notification: {notification}
+                            - {notification}
                         </li>
                     {/each}
                 </ul>

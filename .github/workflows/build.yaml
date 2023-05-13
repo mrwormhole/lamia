@@ -27,7 +27,10 @@ jobs:
         uses: arduino/setup-task@v1
         with:
           version: 3.x
-      
+
+      - name: PNPM install
+        run: task install
+
       - name: PNPM build
         run: task build
 

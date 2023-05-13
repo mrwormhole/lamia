@@ -2,28 +2,19 @@ version: '3'
 silent: true
 
 tasks:
-  server:
-    desc: runs backend server
+  run:
+    desc: runs on localhost
     cmds:
       - |
-        PORT=5555 go run ./cmd/lamia/main.go
-
-  server:build:
-    desc: build backend server
-    cmds:
-      - |
-        go build -o lamia ./cmd/lamia/main.go
-
-  frontend:
-    desc: runs frontend client
-    cmds:
-      - |
-        cd ./web/
         pnpm dev
 
-  frontend:build:
-    desc: builds frontend client
+  build:
+    desc: builds docker image
+    vars:
+      VERSION: '{{.MY_VAR | default "v0.0.1"}}' 
     cmds:
       - |
-        cd ./web/
-        pnpm build
+        docker build . \
+          -t lamia:{{.VERSION}} \
+          --build-arg BUILD_REF={{.VERSION}} \
+          --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \

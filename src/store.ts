@@ -3,7 +3,6 @@ import { browser } from "$app/environment";
 
 type InvoiceRow = {
     description: string;
-    symbol: string;
     rate: number | undefined;
     quantity: number | undefined;
     amount: string;
@@ -20,6 +19,8 @@ type InvoiceData = {
     invoiceNumber: string;
     issueDate: string;
     dueDate: string;
+    logoFilename: string;
+    logoBase64Img: string;
 }
 
 export const invoice = writable<InvoiceData>(fromLocalStorage());
@@ -40,7 +41,6 @@ function fromLocalStorage(key: string = "lamia-invoice-data"): InvoiceData {
         rows: [
             {
                 description: "",
-                symbol: "£",
                 rate: undefined,
                 quantity: undefined,
                 amount: "",
@@ -55,6 +55,8 @@ function fromLocalStorage(key: string = "lamia-invoice-data"): InvoiceData {
         invoiceNumber: "",
         issueDate: "",
         dueDate: "",
+        logoFilename: "",
+        logoBase64Img: "",
     }
 }
 

@@ -1,7 +1,6 @@
 <script lang="ts">
     import { browser } from "$app/environment";
-    import { append } from "svelte/internal";
-    import Page from "../routes/+page.svelte";
+    import { goto } from "$app/navigation";
     import { invoice } from "../store";
 
     const currencies = ["GBP (£)", "USD ($)", "EUR (€)"];
@@ -15,11 +14,9 @@ Candy Factory, 1445 Norwood Ave
 Itasca, IL 60143
 willy@wonka.com
 `;
-    let filename: string = "";
     let notifications: Array<string> = [];
 
-    // total amount tracker
-    $: if (browser) {
+    $: if (browser) { // total amount tracker
         $invoice.totalAmount = 0;
         for (const row of $invoice.rows) {
             if (row.rate == undefined || row.quantity == undefined) {
@@ -33,29 +30,18 @@ willy@wonka.com
         }
     }
 
-    // currency tracker
-    $: if (browser) {
-        $invoice.symbol = CurrencySymbol($invoice.currency);
-        for (const row of $invoice.rows) {
-            row.symbol = CurrencySymbol($invoice.currency);
-        }
-        $invoice.rows = [...$invoice.rows];
-    }
-
-    function setFilename(event: Event) {
+    function setLogo(event: Event) {
         const target = event.target as HTMLInputElement;
         if (target.files != undefined && target.files.length > 0) {
-            filename = target.files[0].name;
+            const reader: FileReader = new FileReader();
+            reader.addEventListener("load", () => {
+                if (reader.result != undefined) {
+                    $invoice.logoBase64Img = reader.result.toString();
+                }
+            });
+            reader.readAsDataURL(target.files[0]);
+            $invoice.logoFilename = target.files[0].name;
         }
-    }
-
-    function CurrencySymbol(currency: string): string {
-        for (const symbol of symbols) {
-            if (currency.includes(symbol)) {
-                return symbol;
-            }
-        }
-        return "";
     }
 
     function setDecimal(event: Event) {
@@ -72,7 +58,6 @@ willy@wonka.com
             ...$invoice.rows,
             {
                 description: "",
-                symbol: $invoice.symbol,
                 rate: undefined,
                 quantity: undefined,
                 amount: "",
@@ -84,7 +69,6 @@ willy@wonka.com
         $invoice.rows = [
             {
                 description: "",
-                symbol: symbols[0],
                 rate: undefined,
                 quantity: undefined,
                 amount: "",
@@ -99,74 +83,17 @@ willy@wonka.com
         $invoice.invoiceNumber = "";
         $invoice.issueDate = "";
         $invoice.dueDate = "";
-
-        let el = document.querySelector(".file-input") as HTMLInputElement;
-        el.value = "";
-        filename = "";
-    }
-
-    async function submit(event: Event) {
-        const target = event.target as HTMLFormElement;
-        const formData = new FormData(target);
-
-        $invoice.rows.forEach((row, i) => {
-            formData.append(`description-${i}`, row.description);
-            if (row.rate != undefined) {
-                formData.append(`rate-${i}`, DecimalFixed(row.rate));
-            }
-            if (row.quantity != undefined) {
-                formData.append(`quantity-${i}`, DecimalFixed(row.quantity));
-            }
-            formData.append(`amount-${i}`, row.amount);
-        });
-        formData.append("totalAmount", DecimalFixed($invoice.totalAmount));
-        formData.append("symbol", $invoice.symbol);
-        notifications = []
-
-        try {
-            const response = await fetch(
-                "http://localhost:5555/generate/invoice",
-                {
-                    method: "POST",
-                    body: formData,
-                }
-            );
-            if (response.ok) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                let downloaderElement = document.createElement("a");
-                downloaderElement.href = url;
-                const parts = response.headers
-                    .get("content-disposition")
-                    ?.split(";");
-                if (parts != undefined && parts.length > 1) {
-                    downloaderElement.download = parts[1].split("=")[1];
-                } else {
-                    downloaderElement.download = `invoice-${$invoice.issueDate}.pdf`;
-                }
-                document.body.appendChild(downloaderElement);
-                downloaderElement.click();
-                downloaderElement.remove();
-            } else {
-                const text = await response.text();
-                notifications = [...notifications, text]
-            }
-
-            console.log(response);
-            response.headers.forEach(function (val, key) {
-                console.log(key + " -> " + val);
-            });
-        } catch (error) {
-            console.error(error);
-        }
+        $invoice.logoBase64Img = "";
+        $invoice.logoFilename = "";
     }
 </script>
 
 <form
     class="container"
-    on:submit|preventDefault={submit}
-    method="POST"
-    enctype="multipart/form-data"
+    on:submit|preventDefault={() => {
+        notifications = [];
+        goto("/print");
+    }}
 >
     <div class="box box-good">
         <div class="columns">
@@ -189,7 +116,7 @@ willy@wonka.com
                             class="file-input"
                             type="file"
                             name="logo"
-                            on:change={setFilename}
+                            on:change={setLogo}
                         />
                         <span class="file-cta">
                             <span class="file-icon">
@@ -197,7 +124,9 @@ willy@wonka.com
                             </span>
                             <span class="file-label"> Upload </span>
                         </span>
-                        <span class="file-name"> {filename} </span>
+                        <span class="file-name">
+                            {$invoice.logoFilename ? $invoice.logoFilename : ""}
+                        </span>
                     </label>
                 </div>
             </div>
@@ -250,7 +179,7 @@ willy@wonka.com
                     <tr>
                         <th>Description</th>
                         <th>Rate</th>
-                        <th>Quantity</th>
+                        <th>Qty</th>
                         <th>Amount</th>
                     </tr>
                 </thead>
@@ -294,7 +223,9 @@ willy@wonka.com
                                 />
                             </td>
                             <td>
-                                {row.symbol}{row.amount ? row.amount : "0.00"}
+                                {$invoice.symbol}{row.amount
+                                    ? row.amount
+                                    : "0.00"}
                             </td>
                         </tr>
                     {/each}
@@ -325,16 +256,19 @@ willy@wonka.com
         />
 
         {#if notifications.length != 0}
-        <div class="notification is-danger">
-            <button class="delete" on:click|preventDefault={() => notifications = []} />
-            <ul class="">   
-            {#each notifications as notification}
-            <li class="">
-                - Notification: {notification}
-            </li>
-            {/each}
-            </ul>
-        </div>
+            <div class="notification is-danger">
+                <button
+                    class="delete"
+                    on:click|preventDefault={() => (notifications = [])}
+                />
+                <ul class="">
+                    {#each notifications as notification}
+                        <li class="">
+                            - Notification: {notification}
+                        </li>
+                    {/each}
+                </ul>
+            </div>
         {/if}
 
         <div class="box-footer mt-5 has-text-right">
@@ -367,9 +301,9 @@ willy@wonka.com
             </button>
             <button class="button is-dark" type="submit">
                 <span class="icon">
-                    <i class="fa fa-download" aria-hidden="true" />
+                    <i class="fa fa-print" aria-hidden="true" />
                 </span>
-                <span>Download</span>
+                <span>Print</span>
             </button>
         </div>
     </div>

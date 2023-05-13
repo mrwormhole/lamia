@@ -44,4 +44,5 @@ tasks:
         --build-arg BUILD_REF={{.VERSION}} \
         --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
         --platform="linux/arm64,linux/amd64" \
+        --provenance=false \
         --push

@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lamia
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lamia-svc
+  namespace: lamia
+spec:
+  ports:
+    - name: web
+      port: 80
+      targetPort: 8080
+  selector:
+    app: lamia-app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lamia-deploy
+  namespace: lamia
+spec:
+  selector:
+    matchLabels:
+      app: lamia-app
+  template:
+    metadata:
+      labels:
+        app: lamia-app
+    spec:
+      containers:
+        - name: lamia-app
+          image: ghcr.io/mrwormhole/lamia:v0.0.3
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "50m"
+            limits:
+              memory: "32Mi"
+              cpu: "50m"

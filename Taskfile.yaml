@@ -26,12 +26,8 @@ tasks:
       VERSION: '{{.VERSION | default "v0.0.1"}}' 
     cmds:
       - |
-        docker buildx build . \
+        docker build . \
         -t lamia:{{.VERSION}} \
-        --build-arg BUILD_REF={{.VERSION}} \
-        --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
-        --platform="linux/amd64" \
-        --output type=docker
 
   docker:publish:
     desc: publishes the docker image to GHCR

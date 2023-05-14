@@ -11,8 +11,8 @@ metadata:
 spec:
   ports:
     - name: web
-      port: 80
-      targetPort: 8080
+      port: 8080
+      targetPort: 80
   selector:
     app: lamia-app
 ---
@@ -34,7 +34,7 @@ spec:
         - name: lamia-app
           image: ghcr.io/mrwormhole/lamia:v0.0.3
           ports:
-            - containerPort: 8080
+            - containerPort: 80
           resources:
             requests:
               memory: "32Mi"

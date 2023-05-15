@@ -9,7 +9,7 @@ COPY . .
 RUN npm install -g pnpm
 RUN pnpm install && pnpm build
 
-FROM --platform=${TARGETPLATFORM:-linux/amd64} nginx:latest AS ship
+FROM --platform=${TARGETPLATFORM:-linux/amd64} nginx:alpine AS ship
 
 COPY ./nginx.conf etc/nginx/conf.d/default.conf
 COPY --from=build /app/build /usr/share/nginx/html

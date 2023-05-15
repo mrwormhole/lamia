@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
         - name: lamia-app
-          image: ghcr.io/mrwormhole/lamia:v0.0.12
+          image: ghcr.io/mrwormhole/lamia:v0.0.1-alpha
           ports:
             - containerPort: 80
           resources:

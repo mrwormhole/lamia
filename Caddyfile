@@ -1,4 +1,4 @@
-http://lamia-svc.lamia {
+http://0.0.0.0 {
 	log {
 		format json
 	}

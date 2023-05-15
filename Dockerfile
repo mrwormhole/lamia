@@ -14,4 +14,7 @@ FROM --platform=${TARGETPLATFORM:-linux/amd64} caddy:latest AS ship
 COPY ./Caddyfile /etc/caddy/Caddyfile
 COPY --from=build /app/build /srv
 
+EXPOSE 80
+EXPOSE 443
+
 CMD ["caddy", "run", "--config=/etc/caddy/Caddyfile"]

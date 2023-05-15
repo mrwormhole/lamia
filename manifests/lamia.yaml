@@ -12,9 +12,11 @@ spec:
   ports:
   - name: insecure
     port: 80
+    targetPort: 80
     protocol: TCP
   - name: secure
     port: 443
+    targetPort: 443
     protocol: TCP
   selector:
     app: lamia-app

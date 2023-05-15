@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
         - name: lamia-app
-          image: ghcr.io/mrwormhole/lamia:v0.0.5
+          image: ghcr.io/mrwormhole/lamia:v0.0.6
           ports:
             - containerPort: 80
             - containerPort: 443

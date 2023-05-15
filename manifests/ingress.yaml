@@ -4,14 +4,13 @@ metadata:
  name: lamia-ingress
  namespace: lamia
  annotations:
-   kubernetes.io/ingress.class: traefik
    cert-manager.io/issuer: "lamia-issuer"
 spec:
- tls:
+  tls:
    - hosts:
        - lamia.goldenhandsoftware.co.uk
      secretName: lamia-ingress-http-tls
- rules:
+  rules:
    - host: lamia.goldenhandsoftware.co.uk
      http:
        paths:

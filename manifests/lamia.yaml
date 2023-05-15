@@ -14,10 +14,6 @@ spec:
     port: 80
     targetPort: 80
     protocol: TCP
-  - name: secure
-    port: 443
-    targetPort: 443
-    protocol: TCP
   selector:
     app: lamia-app
 ---
@@ -37,10 +33,9 @@ spec:
     spec:
       containers:
         - name: lamia-app
-          image: ghcr.io/mrwormhole/lamia:v0.0.11
+          image: ghcr.io/mrwormhole/lamia:v0.0.12
           ports:
             - containerPort: 80
-            - containerPort: 443
           resources:
             requests:
               memory: "32Mi"

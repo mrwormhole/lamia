@@ -4,7 +4,7 @@ metadata:
  name: lamia-ingress
  namespace: lamia
  annotations:
-   kubernetes.io/ingress.class: traefik
+   #kubernetes.io/ingress.class: traefik
    cert-manager.io/issuer: "lamia-issuer"
 spec:
  tls:
@@ -21,4 +21,4 @@ spec:
              service:
                name: lamia-svc
                port:
-                 number: 443
+                 number: 80

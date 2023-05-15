@@ -10,9 +10,11 @@ metadata:
   namespace: lamia
 spec:
   ports:
-  - port: 80
+  - name: insecure
+    port: 80
     protocol: TCP
-  - port: 443
+  - name: secure
+    port: 443
     protocol: TCP
   selector:
     app: lamia-app

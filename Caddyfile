@@ -1,4 +1,4 @@
-http://0.0.0.0 {
+lamia.goldenhandsoftware.co.uk {
 	log {
 		format json
 	}

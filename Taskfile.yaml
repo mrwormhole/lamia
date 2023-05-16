@@ -32,10 +32,12 @@ tasks:
   docker:publish:
     desc: publishes the docker image to GHCR
     vars:
-      VERSION: $(git fetch --tags && git describe --tags --abbrev=0) 
+      VERSION: $(git fetch --tags && git describe --tags --abbrev=0)
+      SRV: '{{.SRV | default "caddy"}}'
     cmds:
       - |
         docker buildx build . \
+        -f ./docker/Dockerfile.{{.SRV}} \
         -t ghcr.io/mrwormhole/lamia:{{.VERSION}} \
         --build-arg BUILD_REF={{.VERSION}} \
         --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \

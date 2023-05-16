@@ -32,7 +32,7 @@ tasks:
   docker:publish:
     desc: publishes the docker image to GHCR
     vars:
-      VERSION: $(git fetch --tags && git describe --tags --abbrev=0)
+      VERSION: $(git fetch --tags --force && git describe --tags --abbrev=0)
       SRV: '{{.SRV | default "caddy"}}'
     cmds:
       - |

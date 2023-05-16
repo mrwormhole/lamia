@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: lamia-app
-          image: ghcr.io/mrwormhole/lamia:v0.0.1-alpha # {"$imagepolicy": "flux-system:lamia"}
+          image: ghcr.io/mrwormhole/lamia:v0.0.1 # {"$imagepolicy": "flux-system:lamia"}
           ports:
             - containerPort: 80
           resources:

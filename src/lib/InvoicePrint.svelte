@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { invoice } from "../store";
+    import { DecimalFixed } from "./decimal";
 
     let from: Array<string> = [];
     let to: Array<string> = [];
@@ -45,7 +46,7 @@
                 <tr>
                     <!--<th class="service">SERVICE</th>-->
                     <th class="desc">DESCRIPTION</th>
-                    <th>PRICE</th>
+                    <th class="">PRICE</th>
                     <th>QTY</th>
                     <th>TOTAL</th>
                 </tr>
@@ -55,9 +56,9 @@
                     <tr>
                         <!--<td class="service">Development</td>-->
                         <td class="desc">{row.description}</td>
-                        <td class="rate">{$invoice.symbol}{row.rate}</td>
+                        <td class="rate">{$invoice.currencySymbol}{row.rate}</td>
                         <td class="qty">{row.quantity}</td>
-                        <td class="total">{$invoice.symbol}{row.amount}</td>
+                        <td class="total">{$invoice.currencySymbol}{row.amount}</td>
                     </tr>
                 {/each}
                 <!--<tr>
@@ -71,7 +72,7 @@
                 <tr>
                     <td colspan="3" class="grand total">TOTAL</td>
                     <td class="grand total"
-                        >{$invoice.symbol}{$invoice.totalAmount}</td
+                        >{$invoice.currencySymbol}{DecimalFixed($invoice.totalAmount)}</td
                     >
                 </tr>
             </tbody>
@@ -92,7 +93,7 @@
     <footer>
         Invoice was created by <a href="https://goldenhandsoftware.co.uk"
             >Goldenhand Software Limited</a
-        > and is valid without the signature and seal.
+        > and is valid without the signature.
     </footer>
 </div>
 
@@ -190,6 +191,7 @@
         border-bottom: 1px solid #c1ced9;
         white-space: nowrap;
         font-weight: normal;
+        text-align: right;
     }
 
     /*table .service,*/

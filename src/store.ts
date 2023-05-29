@@ -10,8 +10,7 @@ type InvoiceRow = {
 
 type InvoiceData = {
     rows: Array<InvoiceRow>;
-    currency: string;
-    symbol: string;
+    currencySymbol: string;
     totalAmount: number;
     notes: string;
     from: string;
@@ -24,20 +23,11 @@ type InvoiceData = {
 }
 
 export const invoice = writable<InvoiceData>(fromLocalStorage());
-
 invoice.subscribe(toLocalStorage);
 
-// Get value from localStorage if in browser and the value is stored, otherwise fallback
+// Get the values from localStorage if in browser and the value is stored
 function fromLocalStorage(key: string = "lamia-invoice-data"): InvoiceData {
-    if (browser) {
-        const stored = window.localStorage.getItem(key)
-
-        if (stored != null) {
-            return JSON.parse(stored);
-        }
-    }
-
-    return {
+    let empty: InvoiceData = {
         rows: [
             {
                 description: "",
@@ -46,8 +36,7 @@ function fromLocalStorage(key: string = "lamia-invoice-data"): InvoiceData {
                 amount: "",
             },
         ],
-        currency: "GBP (£)",
-        symbol: "£",
+        currencySymbol: "£",
         totalAmount: 0,
         notes: "",
         from: "",
@@ -57,12 +46,23 @@ function fromLocalStorage(key: string = "lamia-invoice-data"): InvoiceData {
         dueDate: "",
         logoFilename: "",
         logoBase64Img: "",
+    };
+    if (!browser) {
+        return empty;
     }
+    
+    const stored = window.localStorage.getItem(key);
+    if (stored != null) {
+        return JSON.parse(stored);
+    }
+
+    return empty;
 }
 
-// Set value to localStorage if in browser
+// Set the values to localStorage if in browser
 function toLocalStorage(d: InvoiceData) {
-    if (browser) {
-        localStorage.setItem("lamia-invoice-data", JSON.stringify(d))
+    if (!browser) {
+        return;
     }
+    localStorage.setItem("lamia-invoice-data", JSON.stringify(d));
 }

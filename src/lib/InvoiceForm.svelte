@@ -2,9 +2,9 @@
     import { browser } from "$app/environment";
     import { goto } from "$app/navigation";
     import { invoice } from "../store";
+    import { DecimalFixed } from "./decimal";
 
-    const currencies = ["GBP (£)", "USD ($)", "EUR (€)"];
-    const symbols = ["£", "$", "€"];
+    const currencies = ["£", "$", "€"];
     const fromPlaceholder = `From Goldenhand Software
 1 Electric Wharf, Generator Hall
 Coventry, England, CV1 4JL
@@ -77,10 +77,6 @@ willy@wonka.com
         target.value = DecimalFixed(parseFloat(target.value));
     }
 
-    function DecimalFixed(n: number): string {
-        return (Math.floor(n * 100) / 100).toFixed(2).toString();
-    }
-
     function addRow() {
         $invoice.rows = [
             ...$invoice.rows,
@@ -102,8 +98,7 @@ willy@wonka.com
                 amount: "",
             },
         ];
-        $invoice.currency = currencies[0];
-        $invoice.symbol = symbols[0];
+        $invoice.currencySymbol = currencies[0];
         $invoice.totalAmount = 0;
         $invoice.notes = "";
         $invoice.from = "";
@@ -252,7 +247,7 @@ willy@wonka.com
                                 />
                             </td>
                             <td>
-                                {$invoice.symbol}{row.amount
+                                {$invoice.currencySymbol}{row.amount
                                     ? row.amount
                                     : "0.00"}
                             </td>
@@ -267,7 +262,7 @@ willy@wonka.com
                 <ul class="list-group list-group-unbordered">
                     <li class="list-group-item">
                         <p class="subtitle has-text-weight-bold">
-                            Total: {$invoice.symbol}{DecimalFixed(
+                            Total: {$invoice.currencySymbol}{DecimalFixed(
                                 $invoice.totalAmount
                             )}
                         </p>
@@ -302,9 +297,9 @@ willy@wonka.com
 
         <div class="box-footer mt-5 has-text-right">
             <div class="select is-dark">
-                <select bind:value={$invoice.currency}>
-                    {#each currencies as currency}
-                        <option>{currency}</option>
+                <select bind:value={$invoice.currencySymbol}>
+                    {#each ["GBP (£)", "USD ($)", "EUR (€)"] as currencyText, i}
+                        <option value={currencies[i]}>{currencyText}</option>
                     {/each}
                 </select>
             </div>

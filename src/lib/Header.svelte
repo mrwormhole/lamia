@@ -1,10 +1,10 @@
 <script lang="ts">
-    export let name: string;
+    export let appName: string;
 </script>
 
 <header class="hero is-info">
     <div class="hero-body has-text-centered">
-        <p class="title is-capitalized">{name}</p>
+        <p class="title is-capitalized">{appName}</p>
     </div>
 </header>
 

@@ -5,7 +5,7 @@
 </script>
 
 <div id="main">
-    <Header name="Lamia Invoice Generator" />
+    <Header appName="Lamia Invoice Generator" />
     <InvoiceForm />
-    <Footer name="Lamia Invoice Generator" />
+    <Footer appName="Lamia Invoice Generator" />
 </div>

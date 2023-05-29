@@ -46,7 +46,7 @@
                 <tr>
                     <!--<th class="service">SERVICE</th>-->
                     <th class="desc">DESCRIPTION</th>
-                    <th class="">PRICE</th>
+                    <th>PRICE</th>
                     <th>QTY</th>
                     <th>TOTAL</th>
                 </tr>

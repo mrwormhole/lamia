@@ -16,6 +16,7 @@ willy@wonka.com
 `;
     const validImageTypes = ["image/jpg", "image/jpeg", "image/png"];
     const mb = 1 << (10 * 2);
+    const dayInMs = 1000 * 60 * 60 * 24;
 
     let notifications: Array<string> = [];
 
@@ -60,8 +61,6 @@ willy@wonka.com
                 if (reader.result != undefined) {
                     $invoice.logoBase64Img = reader.result.toString();
                     $invoice.logoFilename = file.name;
-
-                    console.log("SIZE", file.size);
                 }
             };
             reader.onerror = function (error) {
@@ -75,6 +74,12 @@ willy@wonka.com
     function setDecimal(event: Event) {
         const target = event.target as HTMLInputElement;
         target.value = DecimalFixed(parseFloat(target.value));
+    }
+
+    function setAutoDueDate(event: Event) {
+        const target = event.target as HTMLInputElement;
+        const futureDate = new Date(Date.parse(target.value) +  15 * dayInMs);
+        $invoice.dueDate = futureDate.toISOString().split('T')[0];
     }
 
     function addRow() {
@@ -161,6 +166,7 @@ willy@wonka.com
                     type="date"
                     name="issueDate"
                     bind:value={$invoice.issueDate}
+                    on:change={setAutoDueDate}
                     required
                 />
             </div>

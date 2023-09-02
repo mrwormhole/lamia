@@ -33,8 +33,12 @@
             <div><span>ISSUE DATE</span> {$invoice.issueDate}</div>
             <div><span>DUE DATE</span> {$invoice.dueDate}</div>
             <div>
-                {#each to as t}
-                    <span /> {t} <br />
+                {#each to as t, i}
+                    {#if i == 0}
+                        <span>BILL TO</span> {t} <br />
+                    {:else}
+                        <span></span> {t} <br />
+                    {/if}
                 {/each}
             </div>
         </div>

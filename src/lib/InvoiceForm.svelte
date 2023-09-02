@@ -80,7 +80,6 @@ willy@wonka.com
         const target = event.target as HTMLInputElement;
         const futureDate = new Date(Date.parse(target.value) +  15 * dayInMs);
         $invoice.dueDate = futureDate.toISOString().split('T')[0];
-        console.log($invoice.dueDate);
     }
 
     function addRow() {

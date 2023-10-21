@@ -27,6 +27,7 @@ tasks:
     cmds:
       - |
         docker build . \
+        -f ./docker/Dockerfile.caddy \
         -t lamia:{{.VERSION}} \
 
   docker:publish:

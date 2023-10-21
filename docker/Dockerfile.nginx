@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM:-linux/amd64} node:alpine3.17 AS build
+FROM --platform=${BUILDPLATFORM:-linux/amd64} node:20-alpine AS build
 
 ARG BUILDPLATFORM
 ARG TARGETPLATFORM
@@ -19,3 +19,4 @@ EXPOSE 80
 STOPSIGNAL SIGQUIT
 
 CMD ["nginx", "-g", "daemon off;"]
+

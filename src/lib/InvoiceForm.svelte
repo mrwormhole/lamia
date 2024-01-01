@@ -2,7 +2,7 @@
     import { browser } from "$app/environment";
     import { goto } from "$app/navigation";
     import { invoice } from "../store";
-    import { DecimalFixed } from "./decimal";
+    import { DecimalFixed, DecimalFixedNum } from "./decimal";
 
     const currencies = ["£", "$", "€"];
     const fromPlaceholder = `From Goldenhand Software
@@ -26,12 +26,13 @@ willy@wonka.com
         for (const row of $invoice.rows) {
             if (row.rate == undefined || row.quantity == undefined) {
                 row.amount = "";
-            } else {
-                row.rate = Math.floor(row.rate * 100) / 100;
-                row.quantity = Math.floor(row.quantity * 100) / 100;
-                row.amount = DecimalFixed(row.rate * row.quantity);
-                $invoice.totalAmount += parseFloat(row.amount);
-            }
+                continue
+            } 
+            
+            row.rate = DecimalFixedNum(row.rate);
+            row.quantity = DecimalFixedNum(row.quantity); 
+            row.amount = DecimalFixed(row.rate * row.quantity);
+            $invoice.totalAmount += parseFloat(row.amount);
         }
     }
 
@@ -78,8 +79,8 @@ willy@wonka.com
 
     function setAutoDueDate(event: Event) {
         const target = event.target as HTMLInputElement;
-        const futureDate = new Date(Date.parse(target.value) +  15 * dayInMs);
-        $invoice.dueDate = futureDate.toISOString().split('T')[0];
+        const futureDate = new Date(Date.parse(target.value) + 15 * dayInMs);
+        $invoice.dueDate = futureDate.toISOString().split("T")[0];
     }
 
     function addRow() {
@@ -269,7 +270,7 @@ willy@wonka.com
                     <li class="list-group-item">
                         <p class="subtitle has-text-weight-bold">
                             Total: {$invoice.currencySymbol}{DecimalFixed(
-                                $invoice.totalAmount
+                                $invoice.totalAmount,
                             )}
                         </p>
                     </li>

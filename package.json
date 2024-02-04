@@ -11,7 +11,7 @@
     "prepare": "svelte-kit sync"
   },
   "devDependencies": {
-    "@sveltejs/adapter-static": "^3.0.2",
+    "@sveltejs/adapter-static": "^3.0.1",
     "@sveltejs/kit": "^2.5.0",
     "bulma": "^0.9.4",
     "sass": "^1.70.0",
@@ -20,7 +20,7 @@
     "tslib": "^2.6.2",
     "typescript": "^5.3.3",
     "vite": "^5.0.12",
-    "@sveltejs/vite-plugin-svelte": "^3.0.1"
+    "@sveltejs/vite-plugin-svelte": "^3.0.2"
   },
   "type": "module"
 }

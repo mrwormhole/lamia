@@ -131,6 +131,7 @@ willy@wonka.com
                 <input
                     class="input"
                     type="text"
+                    aria-label="invoiceNumber"
                     name="invoiceNumber"
                     placeholder="Invoice 30"
                     bind:value={$invoice.invoiceNumber}
@@ -144,6 +145,7 @@ willy@wonka.com
                         <input
                             class="file-input"
                             type="file"
+                            aria-label="logo"
                             name="logo"
                             accept={validImageTypes.join(",")}
                             on:change={setLogo}
@@ -165,6 +167,7 @@ willy@wonka.com
                 <input
                     class="input"
                     type="date"
+                    aria-label="issueDate"
                     name="issueDate"
                     bind:value={$invoice.issueDate}
                     on:change={setAutoDueDate}
@@ -176,6 +179,7 @@ willy@wonka.com
                 <input
                     class="input"
                     type="date"
+                    aria-label="dueDate"
                     name="dueDate"
                     bind:value={$invoice.dueDate}
                     required
@@ -189,6 +193,7 @@ willy@wonka.com
                     <textarea
                         class="textarea"
                         placeholder={fromPlaceholder}
+                        aria-label="from" 
                         name="from"
                         bind:value={$invoice.from}
                     />
@@ -197,6 +202,7 @@ willy@wonka.com
                     <textarea
                         class="textarea"
                         placeholder={toPlaceholder}
+                        aria-label="to"
                         name="to"
                         bind:value={$invoice.to}
                     />
@@ -220,6 +226,7 @@ willy@wonka.com
                             <td class="p-0">
                                 <input
                                     id="description"
+                                    aria-label="rowDescription"
                                     class="input is-borderless"
                                     type="text"
                                     placeholder="Extreme Milky Chocolate High Quality 20% Cocoa"
@@ -230,6 +237,7 @@ willy@wonka.com
                             <td class="p-0">
                                 <input
                                     id="rate"
+                                    aria-label="rowRate"
                                     class="input is-borderless"
                                     type="number"
                                     on:change|preventDefault={setDecimal}
@@ -243,6 +251,7 @@ willy@wonka.com
                             <td class="p-0">
                                 <input
                                     id="quantity"
+                                    aria-label="rowQuantity"
                                     class="input is-borderless"
                                     type="number"
                                     on:change|preventDefault={setDecimal}
@@ -281,6 +290,7 @@ willy@wonka.com
         <textarea
             class="textarea mt-5 mb-5"
             placeholder="Optional Notes..."
+            aria-label="notes"
             name="notes"
             rows="12"
             bind:value={$invoice.notes}

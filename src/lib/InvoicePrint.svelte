@@ -3,11 +3,17 @@
     import { invoice } from "../store";
     import { DecimalFixed } from "./decimal";
 
+    export let title = "Invoice";
+
     let from: Array<string> = [];
     let to: Array<string> = [];
     let notes: Array<string> = [];
 
     onMount(() => {
+        if ($invoice.invoiceNumber.trim() != "") {
+            title = $invoice.invoiceNumber;
+        }
+
         from = $invoice.from.split("\n");
         to = $invoice.to.split("\n");
         notes = $invoice.notes.split("\n");
@@ -17,6 +23,10 @@
         }, 1000);
     });
 </script>
+
+<svelte:head>
+   <title>{title}</title>
+</svelte:head>
 
 <div id="invoice-container">
     <header class="clearfix">

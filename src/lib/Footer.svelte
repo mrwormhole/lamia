@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let appName: String;
+export let appName: string;
 </script>
 
 

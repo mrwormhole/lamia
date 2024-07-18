@@ -1,27 +1,27 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import { invoice } from "../store";
-    import { DecimalFixed } from "./decimal";
+import { onMount } from "svelte";
+import { invoice } from "../store";
+import { DecimalFixed } from "./decimal";
 
-    export let title = "Invoice";
+export let title = "Invoice";
 
-    let from: Array<string> = [];
-    let to: Array<string> = [];
-    let notes: Array<string> = [];
+let from: Array<string> = [];
+let to: Array<string> = [];
+let notes: Array<string> = [];
 
-    onMount(() => {
-        if ($invoice.invoiceNumber.trim() != "") {
-            title = $invoice.invoiceNumber;
-        }
+onMount(() => {
+    if ($invoice.invoiceNumber.trim() !== "") {
+        title = $invoice.invoiceNumber;
+    }
 
-        from = $invoice.from.split("\n");
-        to = $invoice.to.split("\n");
-        notes = $invoice.notes.split("\n");
+    from = $invoice.from.split("\n");
+    to = $invoice.to.split("\n");
+    notes = $invoice.notes.split("\n");
 
-        setTimeout(() => {
-            window.print();
-        }, 1000);
-    });
+    setTimeout(() => {
+        window.print();
+    }, 1000);
+});
 </script>
 
 <svelte:head>

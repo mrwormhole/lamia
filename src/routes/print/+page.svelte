@@ -1,5 +1,5 @@
 <script lang="ts">
-    import InvoicePrint from "$lib/InvoicePrint.svelte";
+import InvoicePrint from "$lib/InvoicePrint.svelte";
 </script>
 
 <InvoicePrint />

@@ -3,7 +3,7 @@ export function DecimalFixed(n: number): string {
 }
 
 export function DecimalFixedNum(n: number) {
-    let res: number = parseFloat((n * 100).toFixed(2));
+    let res: number = Number.parseFloat((n * 100).toFixed(2));
     res = Math.floor(res) / 100;
     return res;
 }

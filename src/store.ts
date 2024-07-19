@@ -12,8 +12,8 @@ type InvoiceData = {
     rows: Array<InvoiceRow>;
     currencySymbol: string;
     totalAmount: number;
-    
-notes: string;
+
+    notes: string;
     from: string;
     to: string;
     invoiceNumber: string;

@@ -38,11 +38,7 @@ $: if (browser) {
 
 function setLogo(event: Event) {
     const target = event.target as HTMLInputElement;
-    if (
-        target.files !== undefined &&
-        target.files != null &&
-        target.files.length > 0
-    ) {
+    if (target.files && target.files.length > 0) {
         const file = target.files[0];
 
         if (!validImageTypes.includes(file.type)) {
@@ -63,7 +59,7 @@ function setLogo(event: Event) {
 
         const reader: FileReader = new FileReader();
         reader.onload = () => {
-            if (reader.result !== undefined && reader.result != null) {
+            if (reader.result) {
                 $invoice.logoBase64Img = reader.result.toString();
                 $invoice.logoFilename = file.name;
             }

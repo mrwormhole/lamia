@@ -92,7 +92,7 @@ onMount(() => {
             </tbody>
         </table>
 
-        {#if notes.length > 0}
+        {#if notes.length > 0 && notes.join().trim() != ""}
             <div id="notices">
                 <div><b>NOTES</b></div> <br />
                 <div class="notice">

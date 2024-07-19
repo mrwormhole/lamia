@@ -1,7 +1,7 @@
 <script lang="ts">
-    import Header from "$lib/Header.svelte";
-    import Footer from "$lib/Footer.svelte";
-    import InvoiceForm from "$lib/InvoiceForm.svelte";
+import Footer from "$lib/Footer.svelte";
+import Header from "$lib/Header.svelte";
+import InvoiceForm from "$lib/InvoiceForm.svelte";
 </script>
 
 <div id="main">

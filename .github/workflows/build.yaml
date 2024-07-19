@@ -2,37 +2,38 @@ name: Build with PNPM
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup node
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+
+      - name: Run Biome
+        run: biome ci .
+
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
       
       - name: Setup PNPM
         uses: pnpm/action-setup@v2
         with:
-          version: 8.5
-        
-      - name: Install Task
-        uses: arduino/setup-task@v1
-        with:
-          version: 3.x
+          version: latest
 
-      - name: PNPM install
-        run: task install
+      - name: Fetch Deps
+        run: pnpm install
 
-      - name: PNPM build
-        run: task build
+      - name: Build
+        run: pnpm build
 
 
 

@@ -1,26 +1,28 @@
 {
-  "name": "lamia",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
-    "preview": "vite preview",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "prepare": "svelte-kit sync"
-  },
-  "devDependencies": {
-    "@sveltejs/adapter-static": "^3.0.2",
-    "@sveltejs/kit": "^2.5.14",
-    "@sveltejs/vite-plugin-svelte": "^3.1.1",
-    "bulma": "^0.9.4",
-    "sass": "^1.77.5",
-    "svelte": "^4.2.18",
-    "svelte-check": "^3.8.0",
-    "tslib": "^2.6.3",
-    "typescript": "^5.4.5",
-    "vite": "^5.3.1"
-  },
-  "type": "module"
+    "name": "lamia",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "dev": "vite dev",
+        "build": "vite build",
+        "preview": "vite preview",
+        "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+        "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+        "prepare": "svelte-kit sync",
+        "biome": "pnpx @biomejs/biome check"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "1.8.3",
+        "@sveltejs/adapter-static": "^3.0.2",
+        "@sveltejs/kit": "^2.5.14",
+        "@sveltejs/vite-plugin-svelte": "^3.1.1",
+        "bulma": "^0.9.4",
+        "sass": "^1.77.5",
+        "svelte": "^4.2.18",
+        "svelte-check": "^3.8.0",
+        "tslib": "^2.6.3",
+        "typescript": "^5.4.5",
+        "vite": "^5.3.1"
+    },
+    "type": "module"
 }

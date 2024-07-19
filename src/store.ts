@@ -1,17 +1,18 @@
-import { writable } from "svelte/store";
 import { browser } from "$app/environment";
+import { writable } from "svelte/store";
 
 type InvoiceRow = {
     description: string;
     rate: number | undefined;
     quantity: number | undefined;
     amount: string;
-}
+};
 
 type InvoiceData = {
     rows: Array<InvoiceRow>;
     currencySymbol: string;
     totalAmount: number;
+
     notes: string;
     from: string;
     to: string;
@@ -20,14 +21,14 @@ type InvoiceData = {
     dueDate: string;
     logoFilename: string;
     logoBase64Img: string;
-}
+};
 
 export const invoice = writable<InvoiceData>(fromLocalStorage());
 invoice.subscribe(toLocalStorage);
 
 // Get the values from localStorage if in browser and the value is stored
-function fromLocalStorage(key: string = "lamia-invoice-data"): InvoiceData {
-    let empty: InvoiceData = {
+function fromLocalStorage(key = "lamia-invoice-data"): InvoiceData {
+    const empty: InvoiceData = {
         rows: [
             {
                 description: "",
@@ -50,7 +51,7 @@ function fromLocalStorage(key: string = "lamia-invoice-data"): InvoiceData {
     if (!browser) {
         return empty;
     }
-    
+
     const stored = window.localStorage.getItem(key);
     if (stored != null) {
         return JSON.parse(stored);

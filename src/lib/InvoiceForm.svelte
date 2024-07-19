@@ -1,120 +1,120 @@
 <script lang="ts">
-    import { browser } from "$app/environment";
-    import { goto } from "$app/navigation";
-    import { invoice } from "../store";
-    import { DecimalFixed, DecimalFixedNum } from "./decimal";
+import { browser } from "$app/environment";
+import { goto } from "$app/navigation";
+import { invoice } from "../store";
+import { DecimalFixed, DecimalFixedNum } from "./decimal";
 
-    const currencies = ["£", "$", "€"];
-    const fromPlaceholder = `From Goldenhand Software
+const currencies = ["£", "$", "€"];
+const fromPlaceholder = `From Goldenhand Software
 1 Electric Wharf, Generator Hall
 Coventry, England, CV1 4JL
 info@goldenhandosoftware.co.uk`;
-    const toPlaceholder = `To Willy Wonka
+const toPlaceholder = `To Willy Wonka
 Candy Factory, 1445 Norwood Ave
 Itasca, IL 60143
 willy@wonka.com
 `;
-    const validImageTypes = ["image/jpg", "image/jpeg", "image/png"];
-    const mb = 1 << (10 * 2);
-    const dayInMs = 1000 * 60 * 60 * 24;
+const validImageTypes = ["image/jpg", "image/jpeg", "image/png"];
+const mb = 1 << (10 * 2);
+const dayInMs = 1000 * 60 * 60 * 24;
 
-    let notifications: Array<string> = [];
+let notifications: Array<string> = [];
 
-    $: if (browser) {
-        // total amount tracker
-        $invoice.totalAmount = 0;
-        for (const row of $invoice.rows) {
-            if (row.rate == undefined || row.quantity == undefined) {
-                row.amount = "";
-                continue
-            } 
-            
-            row.rate = DecimalFixedNum(row.rate);
-            row.quantity = DecimalFixedNum(row.quantity); 
-            row.amount = DecimalFixed(row.rate * row.quantity);
-            $invoice.totalAmount += parseFloat(row.amount);
+$: if (browser) {
+    // total amount tracker
+    $invoice.totalAmount = 0;
+    for (const row of $invoice.rows) {
+        if (row.rate === undefined || row.quantity === undefined) {
+            row.amount = "";
+            continue;
         }
+
+        row.rate = DecimalFixedNum(row.rate);
+        row.quantity = DecimalFixedNum(row.quantity);
+        row.amount = DecimalFixed(row.rate * row.quantity);
+        $invoice.totalAmount += Number.parseFloat(row.amount);
     }
+}
 
-    function setLogo(event: Event) {
-        const target = event.target as HTMLInputElement;
-        if (target.files != undefined && target.files.length > 0) {
-            const file = target.files[0];
+function setLogo(event: Event) {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+        const file = target.files[0];
 
-            if (!validImageTypes.includes(file.type)) {
-                notifications = [
-                    ...notifications,
-                    `Attached logo(${file.type}) must be an image file.`,
-                ];
-                return;
-            }
-
-            if (file.size > 4 * mb) {
-                notifications = [
-                    ...notifications,
-                    `Attached logo size(${file.size} bytes) must be less than 4MB.`,
-                ];
-                return;
-            }
-
-            const reader: FileReader = new FileReader();
-            reader.onload = function () {
-                if (reader.result != undefined) {
-                    $invoice.logoBase64Img = reader.result.toString();
-                    $invoice.logoFilename = file.name;
-                }
-            };
-            reader.onerror = function (error) {
-                notifications = [...notifications, `Error occurred, ${error}.`];
-            };
-
-            reader.readAsDataURL(file);
+        if (!validImageTypes.includes(file.type)) {
+            notifications = [
+                ...notifications,
+                `Attached logo(${file.type}) must be an image file.`,
+            ];
+            return;
         }
-    }
 
-    function setDecimal(event: Event) {
-        const target = event.target as HTMLInputElement;
-        target.value = DecimalFixed(parseFloat(target.value));
-    }
+        if (file.size > 4 * mb) {
+            notifications = [
+                ...notifications,
+                `Attached logo size(${file.size} bytes) must be less than 4MB.`,
+            ];
+            return;
+        }
 
-    function setAutoDueDate(event: Event) {
-        const target = event.target as HTMLInputElement;
-        const futureDate = new Date(Date.parse(target.value) + 15 * dayInMs);
-        $invoice.dueDate = futureDate.toISOString().split("T")[0];
-    }
+        const reader: FileReader = new FileReader();
+        reader.onload = () => {
+            if (reader.result) {
+                $invoice.logoBase64Img = reader.result.toString();
+                $invoice.logoFilename = file.name;
+            }
+        };
+        reader.onerror = (error) => {
+            notifications = [...notifications, `Error occurred, ${error}.`];
+        };
 
-    function addRow() {
-        $invoice.rows = [
-            ...$invoice.rows,
-            {
-                description: "",
-                rate: undefined,
-                quantity: undefined,
-                amount: "",
-            },
-        ];
+        reader.readAsDataURL(file);
     }
+}
 
-    function clear() {
-        $invoice.rows = [
-            {
-                description: "",
-                rate: undefined,
-                quantity: undefined,
-                amount: "",
-            },
-        ];
-        $invoice.currencySymbol = currencies[0];
-        $invoice.totalAmount = 0;
-        $invoice.notes = "";
-        $invoice.from = "";
-        $invoice.to = "";
-        $invoice.invoiceNumber = "";
-        $invoice.issueDate = "";
-        $invoice.dueDate = "";
-        $invoice.logoBase64Img = "";
-        $invoice.logoFilename = "";
-    }
+function setDecimal(event: Event) {
+    const target = event.target as HTMLInputElement;
+    target.value = DecimalFixed(Number.parseFloat(target.value));
+}
+
+function setAutoDueDate(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const futureDate = new Date(Date.parse(target.value) + 15 * dayInMs);
+    $invoice.dueDate = futureDate.toISOString().split("T")[0];
+}
+
+function addRow() {
+    $invoice.rows = [
+        ...$invoice.rows,
+        {
+            description: "",
+            rate: undefined,
+            quantity: undefined,
+            amount: "",
+        },
+    ];
+}
+
+function clear() {
+    $invoice.rows = [
+        {
+            description: "",
+            rate: undefined,
+            quantity: undefined,
+            amount: "",
+        },
+    ];
+    $invoice.currencySymbol = currencies[0];
+    $invoice.totalAmount = 0;
+    $invoice.notes = "";
+    $invoice.from = "";
+    $invoice.to = "";
+    $invoice.invoiceNumber = "";
+    $invoice.issueDate = "";
+    $invoice.dueDate = "";
+    $invoice.logoBase64Img = "";
+    $invoice.logoFilename = "";
+}
 </script>
 
 <form

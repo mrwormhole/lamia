@@ -17,6 +17,9 @@ onMount(() => {
     to = $invoice.to.split("\n");
     notes = $invoice.notes.split("\n");
 
+    console.log("logo base 64 img:", $invoice.logoBase64Img)
+    console.log("logo filename:", $invoice.logoFilename)
+
     setTimeout(() => {
         window.print();
     }, 1000);
@@ -30,7 +33,13 @@ onMount(() => {
 <div id="invoice-container">
     <header class="clearfix">
         <div id="logo">
-            <img src={$invoice.logoBase64Img} alt={$invoice.logoFilename} />
+            {#if invoice}
+  <img 
+    src={$invoice.logoBase64Img} 
+    alt={$invoice.logoFilename} 
+  />
+{/if}
+           
         </div>
         <h1>{$invoice.invoiceNumber}</h1>
         <div id="company" class="clearfix">

@@ -1,5 +1,5 @@
 <script lang="ts">
-export let appName: string;
+const { appName } = $props();
 </script>
 
 

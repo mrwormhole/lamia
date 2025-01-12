@@ -1,6 +1,7 @@
 <script lang="ts">
 import { browser } from "$app/environment";
 import { goto } from "$app/navigation";
+import { run } from "svelte/legacy";
 import { invoice } from "../store";
 import { DecimalFixed, DecimalFixedNum } from "./decimal";
 
@@ -18,23 +19,25 @@ const validImageTypes = ["image/jpg", "image/jpeg", "image/png"];
 const mb = 1 << (10 * 2);
 const dayInMs = 1000 * 60 * 60 * 24;
 
-let notifications: Array<string> = [];
+let notifications: Array<string> = $state([]);
 
-$: if (browser) {
-    // total amount tracker
-    $invoice.totalAmount = 0;
-    for (const row of $invoice.rows) {
-        if (row.rate === undefined || row.quantity === undefined) {
-            row.amount = "";
-            continue;
+run(() => {
+    if (browser) {
+        // total amount tracker
+        $invoice.totalAmount = 0;
+        for (const row of $invoice.rows) {
+            if (row.rate === undefined || row.quantity === undefined) {
+                row.amount = "";
+                continue;
+            }
+
+            row.rate = DecimalFixedNum(row.rate);
+            row.quantity = DecimalFixedNum(row.quantity);
+            row.amount = DecimalFixed(row.rate * row.quantity);
+            $invoice.totalAmount += Number.parseFloat(row.amount);
         }
-
-        row.rate = DecimalFixedNum(row.rate);
-        row.quantity = DecimalFixedNum(row.quantity);
-        row.amount = DecimalFixed(row.rate * row.quantity);
-        $invoice.totalAmount += Number.parseFloat(row.amount);
     }
-}
+});
 
 function setLogo(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -119,7 +122,8 @@ function clear() {
 
 <form
     class="container"
-    on:submit|preventDefault={() => {
+    onsubmit={(event: Event) => {
+        event.preventDefault();
         notifications = [];
         goto("/print");
     }}
@@ -148,11 +152,11 @@ function clear() {
                             aria-label="logo"
                             name="logo"
                             accept={validImageTypes.join(",")}
-                            on:change={setLogo}
+                            onchange={setLogo}
                         />
                         <span class="file-cta">
                             <span class="file-icon">
-                                <i class="fa fa-upload" />
+                                <i class="fa fa-upload"></i>
                             </span>
                             <span class="file-label"> Upload </span>
                         </span>
@@ -170,7 +174,7 @@ function clear() {
                     aria-label="issueDate"
                     name="issueDate"
                     bind:value={$invoice.issueDate}
-                    on:change={setAutoDueDate}
+                    onchange={setAutoDueDate}
                     required
                 />
             </div>
@@ -196,7 +200,7 @@ function clear() {
                         aria-label="from" 
                         name="from"
                         bind:value={$invoice.from}
-                    />
+></textarea>
                 </div>
                 <div class="tile is-child">
                     <textarea
@@ -205,7 +209,7 @@ function clear() {
                         aria-label="to"
                         name="to"
                         bind:value={$invoice.to}
-                    />
+></textarea>
                 </div>
             </div>
         </div>
@@ -240,7 +244,7 @@ function clear() {
                                     aria-label="rowRate"
                                     class="input is-borderless"
                                     type="number"
-                                    on:change|preventDefault={setDecimal}
+                                    onchange={setDecimal}
                                     min="0"
                                     step="0.01"
                                     placeholder="1.00"
@@ -254,7 +258,7 @@ function clear() {
                                     aria-label="rowQuantity"
                                     class="input is-borderless"
                                     type="number"
-                                    on:change|preventDefault={setDecimal}
+                                    onchange={setDecimal}
                                     min="0"
                                     step="0.01"
                                     placeholder="1.00"
@@ -294,14 +298,15 @@ function clear() {
             name="notes"
             rows="12"
             bind:value={$invoice.notes}
-        />
+></textarea>
 
         {#if notifications.length != 0}
             <div class="notification is-danger">
                 <button
                     class="delete"
-                    on:click|preventDefault={() => (notifications = [])}
-                />
+                    aria-label="close-notification"
+                    onclick={() => (notifications = [])}
+></button>
                 <ul class="">
                     {#each notifications as notification}
                         <li class="">
@@ -323,26 +328,26 @@ function clear() {
             <button
                 class="button is-light"
                 type="button"
-                on:click|preventDefault={addRow}
+                onclick={addRow}
             >
                 <span class="icon">
-                    <i class="fa fa-plus-circle" aria-hidden="true" />
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
                 </span>
                 <span>Add a Row</span>
             </button>
             <button
                 class="button is-light"
                 type="button"
-                on:click|preventDefault={clear}
+                onclick={clear}
             >
                 <span class="icon">
-                    <i class="fa fa-refresh" aria-hidden="true" />
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
                 </span>
                 <span>Clear</span>
             </button>
             <button class="button is-dark" type="submit">
                 <span class="icon">
-                    <i class="fa fa-print" aria-hidden="true" />
+                    <i class="fa fa-print" aria-hidden="true"></i>
                 </span>
                 <span>Print</span>
             </button>

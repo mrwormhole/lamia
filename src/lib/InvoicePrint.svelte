@@ -3,11 +3,10 @@ import { onMount } from "svelte";
 import { invoice } from "../store";
 import { DecimalFixed } from "./decimal";
 
-export let title = "Invoice";
-
-let from: Array<string> = [];
-let to: Array<string> = [];
-let notes: Array<string> = [];
+let { title = "Invoice" } = $props();
+let from: Array<string> = $state([]);
+let to: Array<string> = $state([]);
+let notes: Array<string> = $state([]);
 
 onMount(() => {
     if ($invoice.invoiceNumber.trim() !== "") {

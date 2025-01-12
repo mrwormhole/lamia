@@ -8,6 +8,9 @@ let from: Array<string> = $state([]);
 let to: Array<string> = $state([]);
 let notes: Array<string> = $state([]);
 
+let logoSrc: string = $state("");
+let logoAlt: string = $state("");
+
 onMount(() => {
     if ($invoice.invoiceNumber.trim() !== "") {
         title = $invoice.invoiceNumber;
@@ -17,8 +20,8 @@ onMount(() => {
     to = $invoice.to.split("\n");
     notes = $invoice.notes.split("\n");
 
-    console.log("logo base 64 img:", $invoice.logoBase64Img)
-    console.log("logo filename:", $invoice.logoFilename)
+    logoSrc = $invoice.logoBase64Img; // needed here because of https://svelte.dev/docs/svelte/runtime-warnings#Client-warnings-hydration_attribute_changed
+    logoAlt = $invoice.logoFilename; // same as above, svelte 5 changes the way image src works on hydration
 
     setTimeout(() => {
         window.print();
@@ -33,12 +36,11 @@ onMount(() => {
 <div id="invoice-container">
     <header class="clearfix">
         <div id="logo">
-            {#if invoice}
+     
   <img 
-    src={$invoice.logoBase64Img} 
-    alt={$invoice.logoFilename} 
+    src={logoSrc} 
+    alt={logoAlt} 
   />
-{/if}
            
         </div>
         <h1>{$invoice.invoiceNumber}</h1>
